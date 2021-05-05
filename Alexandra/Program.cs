@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using Disqord.Bot.Hosting;
+using Disqord.Gateway;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Octokit;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -37,12 +40,14 @@ namespace Alexandra
                 .ConfigureDiscordBot((context, bot) =>
                 {
                     bot.Token = context.Configuration["token"];
+                    bot.Intents = GatewayIntents.All;
                     bot.UseMentionPrefix = true;
                     bot.Prefixes = new[] {"lex"};
                 })
                 .ConfigureServices(x =>
                 {
                     x.AddSingleton<HttpClient>();
+                    x.AddSingleton(new GitHubClient(new Octokit.ProductHeaderValue("Alexandra-The-Discord-Bot")));
                 })
                 .Build();
 
