@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
 using Alexandra.Common.Utilities;
 using Disqord;
@@ -19,42 +20,31 @@ namespace Alexandra.Commands.Modules
             _lexGithubClient = lexGithubClient;
         }
         
-        [Group("search")]
-        public class Search : DiscordModuleBase
+        [Command("search")]
+        public async Task<DiscordCommandResult> GitSearchRepos([Remainder] string searchQuery = null)
         {
-            private readonly GitHubClient _lexGithubClient;
+            var request = new SearchRepositoriesRequest(searchQuery);
 
-            public Search(GitHubClient lexGithubClient)
+            var result = await _lexGithubClient.Search.SearchRepo(request);
+            switch (result.Items.Count)
             {
-                _lexGithubClient = lexGithubClient;
-            }
-            
-            [Command("repos", "repo", "repositories")]
-            public async Task<DiscordCommandResult> GitSearchRepos([Remainder] string searchQuery = null)
-            {
-                var request = new SearchRepositoriesRequest(searchQuery);
-
-                var result = await _lexGithubClient.Search.SearchRepo(request);
-                switch (result.Items.Count)
+                case 0:
+                    return Response("It seems no results have been found.");
+                default:
                 {
-                    case 0:
-                        return Response("It seems I couldn't find any results");
-                    default:
+                    var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
+
+                    foreach (var item in result.Items)
                     {
-                        var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
-
-                        foreach (var item in result.Items)
-                        {
-                            fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName(item.Name)
-                                .WithValue($"{item.Owner.Name} {Markdown.Link("Link", item.HtmlUrl)}"));
-                        }
-
-                        var config =
-                            FieldBasedPageProviderConfiguration.Default.WithContent(
-                                $"I have found {result.Items.Count} results");
-
-                        return Pages(new FieldBasedPageProvider(fieldBuilders, config));
+                        fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName(item.Name)
+                            .WithValue($"{item.Owner.Name} {Markdown.Link("Link", item.HtmlUrl)}"));
                     }
+
+                    var config =
+                        FieldBasedPageProviderConfiguration.Default.WithContent(
+                            $"I have found {result.Items.Count} results");
+
+                    return Pages(new FieldBasedPageProvider(fieldBuilders, config));
                 }
             }
         }
@@ -64,7 +54,7 @@ namespace Alexandra.Commands.Modules
         {
             var details = repoName.Split("/");
             if (details.Length < 2)
-                return Response("Not a valid repo name");
+                return Response("It seems like you haven't provided a suitable repo name.");
 
             try
             {
@@ -73,7 +63,7 @@ namespace Alexandra.Commands.Modules
                 var eb = new LocalEmbedBuilder()
                     .WithTitle(result.Name)
                     .WithDescription(result.Description)
-                    .WithColor(LexGlobals.LexColor)
+                    .WithLexColor()
                     .AddField("Language", result.Language)
                     .AddField("Source", Markdown.Link("Github", result.HtmlUrl));
 
@@ -81,7 +71,7 @@ namespace Alexandra.Commands.Modules
             }
             catch (NotFoundException)
             {
-                return Response("No repo was found with that name");
+                return Response("It seems, a repository with that name could not be found, perchance try again.");
             }
 
         }
@@ -96,7 +86,7 @@ namespace Alexandra.Commands.Modules
                 var eb = new LocalEmbedBuilder()
                     .WithTitle(result.Name)
                     .WithDescription(result.Description)
-                    .WithColor(LexGlobals.LexColor)
+                    .WithLexColor()
                     .AddField("Language", result.Language)
                     .AddField("Source", Markdown.Link("Github", result.HtmlUrl));
 
@@ -104,7 +94,7 @@ namespace Alexandra.Commands.Modules
             }
             catch (NotFoundException)
             {
-                return Response("No repo was found with that name");
+                return Response("It seems, a repository with that name could not be found, perchance try again.");
             }
         }
     }
