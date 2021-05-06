@@ -48,6 +48,7 @@ namespace Alexandra
                 {
                     x.AddSingleton<HttpClient>();
                     x.AddSingleton(new GitHubClient(new Octokit.ProductHeaderValue("Alexandra-The-Discord-Bot")));
+                    x.AddSingleton<Random>();
                 })
                 .Build();
 
