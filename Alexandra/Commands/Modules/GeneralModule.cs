@@ -33,8 +33,8 @@ namespace Alexandra.Commands.Modules
                 .WithTitle(Context.Bot.CurrentUser.Name)
                 .AddField("Author", authorString)
                 .AddField("Source Code", Markdown.Link("GitHub", LexGlobals.LexRepo), true)
-                .AddField("Library", Markdown.Link("Disqord " + Library.Version, Library.RepositoryUrl), true)
-                .AddBlankField(isInline: true);
+                .AddField("Octokit.net", Markdown.Link("GitHub", LexGlobals.OctokitRepo), true)
+                .AddField("Library", Markdown.Link("Disqord " + Library.Version, Library.RepositoryUrl), true);
 
             return Response(embedBuilder);
         }
