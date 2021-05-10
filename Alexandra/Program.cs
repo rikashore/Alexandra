@@ -2,9 +2,12 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Alexandra.Database;
+using Alexandra.Database.Helpers;
 using Alexandra.Disqord;
 using Disqord.Bot.Hosting;
 using Disqord.Gateway;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,11 +48,16 @@ namespace Alexandra
                     bot.UseMentionPrefix = true;
                     bot.Prefixes = new[] {"lex"};
                 })
-                .ConfigureServices(x =>
+                .ConfigureServices((context, services) =>
                 {
-                    x.AddSingleton<HttpClient>();
-                    x.AddSingleton(new GitHubClient(new Octokit.ProductHeaderValue("Alexandra-The-Discord-Bot")));
-                    x.AddSingleton<Random>();
+                    var connection = context.Configuration["dbconn"];
+                    services.AddDbContext<LexDbContext>(x => 
+                            x.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 21))))
+                        .AddSingleton<HttpClient>()
+                        .AddSingleton(new GitHubClient(new Octokit.ProductHeaderValue("Alexandra-The-Discord-Bot")))
+                        .AddSingleton<TagHelper>()
+                        .AddSingleton<NoteHelper>()
+                        .AddSingleton<Random>();
                 })
                 .Build();
 
