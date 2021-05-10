@@ -2,6 +2,7 @@
 {
     public class FieldBasedPageProviderConfiguration
     {
+        // Thanks Zack for inspiring me
         public static FieldBasedPageProviderConfiguration Default =>
             new FieldBasedPageProviderConfiguration().WithFieldsPerPage(5).AutoGenerateTitles();
         
