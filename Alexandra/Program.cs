@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Alexandra.Disqord;
 using Disqord.Bot.Hosting;
 using Disqord.Gateway;
 using Microsoft.Extensions.Configuration;
@@ -37,7 +38,7 @@ namespace Alexandra
                     x.Services.Remove(x.Services.First(x => x.ServiceType == typeof(ILogger<>)));
                     x.Services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
                 })
-                .ConfigureDiscordBot((context, bot) =>
+                .ConfigureDiscordBot<LexDisqordBot>((context, bot) =>
                 {
                     bot.Token = context.Configuration["token"];
                     bot.Intents = GatewayIntents.All;
