@@ -3,6 +3,7 @@
     public class FieldBasedPageProviderConfiguration
     {
         // Thanks Zack for inspiring me
+        // https://github.com/Zackattak01/CheeseBot/blob/main/CheeseBot/Disqord/FieldBasedPageProviderConfiguration.cs
         public static FieldBasedPageProviderConfiguration Default =>
             new FieldBasedPageProviderConfiguration().WithFieldsPerPage(5).AutoGenerateTitles();
         
