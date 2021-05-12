@@ -35,5 +35,11 @@ namespace Alexandra.Database.Helpers
             _lexDbContext.Tags.Remove(tag);
             await _lexDbContext.SaveChangesAsync();
         }
+
+        public async Task EditTagAsync(Tag tag, string newContent)
+        {
+            tag.Content = newContent;
+            await _lexDbContext.SaveChangesAsync();
+        }
     }
 }
