@@ -14,7 +14,7 @@ namespace Alexandra.Commands.Modules
     {
         [Command("avatar", "av")]
         [Description("Receive a portrait of yourself or another person")]
-        public DiscordCommandResult Avatar(IMember member = null)
+        public DiscordCommandResult AvatarAsync(IMember member = null)
         {
             member ??= Context.Author;
 
@@ -48,7 +48,7 @@ namespace Alexandra.Commands.Modules
             
             [Command("hex")]
             [Description("Brew random shades through hex")]
-            public async Task HexColors(int amount = 1)
+            public async Task HexColorsAsync(int amount = 1)
             {
                 if (amount <= 5)
                 {
@@ -82,7 +82,7 @@ namespace Alexandra.Commands.Modules
 
             [Command("rgb")]
             [Description("Brew random shades through rgb")]
-            public async Task RgbColors(int amount = 1)
+            public async Task RgbColorsAsync(int amount = 1)
             {
                 if (amount <= 5)
                 {
@@ -115,7 +115,7 @@ namespace Alexandra.Commands.Modules
 
             [Command("hsv")]
             [Description("Brew random shades through hsv")]
-            public async Task HsvColors(int amount = 1)
+            public async Task HsvColorsAsync(int amount = 1)
             {
                 if (amount <= 5)
                 {
@@ -152,7 +152,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("choose", "choice")]
         [Description("Receive a choice")]
-        public DiscordCommandResult Choice([Remainder] string choice)
+        public DiscordCommandResult ChoiceAsync([Remainder] string choice)
         {
             var choices = choice.Split("|");
 

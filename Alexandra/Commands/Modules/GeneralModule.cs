@@ -13,7 +13,7 @@ namespace Alexandra.Commands.Modules
     {
         [Command("ping")]
         [Description("Plays a quick game of Ping Pong.")]
-        public async Task Ping()
+        public async Task PingAsync()
         {
             var stopwatch = Stopwatch.StartNew();
             var msg = await Response("Pong: *loading* response time");
@@ -24,7 +24,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("info")]
         [Description("Get some info about Alexandra")]
-        public DiscordCommandResult Info()
+        public DiscordCommandResult InfoAsync()
         {
             var authorString = Context.Bot.GetUser(LexGlobals.AuthorId).ToString();
 

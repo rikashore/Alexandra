@@ -20,37 +20,87 @@ namespace Alexandra.Commands.Modules
             _lexGithubClient = lexGithubClient;
         }
         
-        [Command("search")]
-        public async Task<DiscordCommandResult> GitSearchRepos([Remainder] string searchQuery = null)
+        [Group("search")]
+        public class SearchModule : DiscordModuleBase
         {
-            var request = new SearchRepositoriesRequest(searchQuery);
-
-            var result = await _lexGithubClient.Search.SearchRepo(request);
-            switch (result.Items.Count)
+            private readonly GitHubClient _lexGithubClient;
+            
+            public SearchModule(GitHubClient lexGithubClient)
             {
-                case 0:
-                    return Response("It seems no results have been found.");
-                default:
+                _lexGithubClient = lexGithubClient;
+            }
+            
+            [Command("repo")]
+            public async Task<DiscordCommandResult> GitSearchReposAsync([Remainder] string searchQuery)
+            {
+                var request = new SearchRepositoriesRequest(searchQuery);
+
+                var result = await _lexGithubClient.Search.SearchRepo(request);
+                switch (result.Items.Count)
                 {
-                    var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
-
-                    foreach (var item in result.Items)
+                    case 0:
+                        return Response("It seems no results have been found.");
+                    default:
                     {
-                        fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName(item.Name)
-                            .WithValue($"{item.Owner.Name} {Markdown.Link("Link", item.HtmlUrl)}"));
+                        var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
+
+                        foreach (var item in result.Items)
+                        {
+                            string description;
+
+                            if (item.Description is null)
+                                description = "";
+                            else if (item.Description.Length < 1000)
+                                description = item.Description;
+                            else
+                                description = "Description too long";
+                            
+                            fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName(item.Name)
+                                .WithValue($"{description} {Markdown.Link("Link", item.HtmlUrl)}"));
+                        }
+
+                        var config =
+                            FieldBasedPageProviderConfiguration.Default.WithContent(
+                                $"I have found {result.Items.Count} results");
+
+                        return Pages(new FieldBasedPageProvider(fieldBuilders, config));
                     }
+                }
+            }
 
-                    var config =
-                        FieldBasedPageProviderConfiguration.Default.WithContent(
-                            $"I have found {result.Items.Count} results");
+            [Command("user")]
+            public async Task<DiscordCommandResult> GitSearchUsersAsync([Remainder] string searchQuery)
+            {
+                var request = new SearchUsersRequest(searchQuery);
 
-                    return Pages(new FieldBasedPageProvider(fieldBuilders, config));
+                var result = await _lexGithubClient.Search.SearchUsers(request);
+                switch (result.Items.Count)
+                {
+                    case 0:
+                        return Response("It seems no results have been found.");
+                    default:
+                    {
+                        var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
+
+                        foreach (var item in result.Items)
+                        {
+                            fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName(item.Name)
+                                .WithValue($"{item.Name}, {item.Bio ?? ""} ({Markdown.Link("Link", item.HtmlUrl)})"));
+                        }
+
+                        var config =
+                            FieldBasedPageProviderConfiguration.Default.WithContent(
+                                $"I have found {result.Items.Count} results");
+
+                        return Pages(new FieldBasedPageProvider(fieldBuilders, config));
+                    }
                 }
             }
         }
 
+
         [Command("repo")]
-        public async Task<DiscordCommandResult> GetRepo(string repoName)
+        public async Task<DiscordCommandResult> GetRepoAsync(string repoName)
         {
             var details = repoName.Split("/");
             if (details.Length < 2)
@@ -77,7 +127,7 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("repo")]
-        public async Task<DiscordCommandResult> GetRepo(string username, string repoName)
+        public async Task<DiscordCommandResult> GetRepoAsync(string username, string repoName)
         {
             try
             {
