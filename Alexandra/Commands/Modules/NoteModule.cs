@@ -23,7 +23,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("create", "make")]
         [Qmmands.Description("Creates a note for you, you can retrieve it later")]
-        public async Task<DiscordCommandResult> MakeNote([Remainder] string content)
+        public async Task<DiscordCommandResult> MakeNoteAsync([Remainder] string content)
         {
             await _noteHelper.CreateNoteAsync(content, Context.Author.Id, DateTime.Now);
             return Response("Note Created!");
@@ -31,7 +31,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("list")]
         [Description("Retrieve all your notes")]
-        public async Task<DiscordCommandResult> ListNotes()
+        public async Task<DiscordCommandResult> ListNotesAsync()
         {
             var notes = await _noteHelper.RetrieveNotesAsync(Context.Author.Id);
 
@@ -64,7 +64,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("get", "retrieve")]
         [Description("retrieve a particular note")]
-        public async Task<DiscordCommandResult> GetNote(int id)
+        public async Task<DiscordCommandResult> GetNoteAsync(int id)
         {
             var note = await _noteHelper.RetrieveNoteAsync(id);
 
@@ -84,7 +84,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("delete", "del", "remove")]
         [Description("Delete a particular note")]
-        public async Task<DiscordCommandResult> DeleteNote(int id)
+        public async Task<DiscordCommandResult> DeleteNoteAsync(int id)
         {
             var note = await _noteHelper.RetrieveNoteAsync(id);
 
