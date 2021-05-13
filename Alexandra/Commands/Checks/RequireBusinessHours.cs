@@ -7,14 +7,11 @@ namespace Alexandra.Commands.Checks
 {
     public class RequireBusinessHours : DiscordCheckAttribute
     {
-        private static int StartHour { get; set; }
-        private static int EndHour { get; set; }
+        private int StartHour { get; } = 9;
+        private int EndHour { get; } = 20;
 
         public RequireBusinessHours()
-        {
-            StartHour = 9;
-            EndHour = 20;
-        }
+        { }
 
         public RequireBusinessHours(int startHour, int endHour)
         {
@@ -22,13 +19,10 @@ namespace Alexandra.Commands.Checks
             EndHour = endHour;
         }
         
-        private static readonly DateTime Now = DateTime.Now;
-        private readonly DateTime _startingDateTime = new DateTime(Now.Year, Now.Month, Now.Day, StartHour, 0, 0);
-        private readonly DateTime _endingDateTime = new DateTime(Now.Year, Now.Month, Now.Day, EndHour, 0, 0);
-
+        // TODO: Figure out how to do night shifts
         public override ValueTask<CheckResult> CheckAsync(DiscordCommandContext context)
         {
-            if (Now > _startingDateTime && Now < _endingDateTime)
+            if (DateTime.UtcNow.Hour > StartHour && DateTime.UtcNow.Hour < EndHour)
                 return Success();
 
             return Failure($"This command is only usable between {StartHour} Hours and {EndHour} Hours");
