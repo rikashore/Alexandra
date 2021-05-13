@@ -31,7 +31,7 @@ namespace Alexandra.Commands.Modules
             }
             
             [Command("repo")]
-            public async Task<DiscordCommandResult> GitSearchReposAsync([Remainder] string searchQuery)
+            public async Task<DiscordCommandResult> GitSearchReposAsync([Name("Search Query"), Remainder] string searchQuery)
             {
                 var request = new SearchRepositoriesRequest(searchQuery);
 
@@ -69,7 +69,7 @@ namespace Alexandra.Commands.Modules
             }
 
             [Command("user")]
-            public async Task<DiscordCommandResult> GitSearchUsersAsync([Remainder] string searchQuery)
+            public async Task<DiscordCommandResult> GitSearchUsersAsync([Name("Search Query"), Remainder] string searchQuery)
             {
                 var request = new SearchUsersRequest(searchQuery);
 
@@ -100,7 +100,7 @@ namespace Alexandra.Commands.Modules
 
 
         [Command("repo")]
-        public async Task<DiscordCommandResult> GetRepoAsync(string repoName)
+        public async Task<DiscordCommandResult> GetRepoAsync([Name("Repository")] string repoName)
         {
             var details = repoName.Split("/");
             if (details.Length < 2)
@@ -127,7 +127,9 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("repo")]
-        public async Task<DiscordCommandResult> GetRepoAsync(string username, string repoName)
+        public async Task<DiscordCommandResult> GetRepoAsync(
+            [Name("Username")] string username, 
+            [Name("Repository Name")] string repoName)
         {
             try
             {
