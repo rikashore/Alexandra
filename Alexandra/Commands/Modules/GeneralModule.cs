@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
 using Disqord;
 using Disqord.Bot;
@@ -29,7 +30,7 @@ namespace Alexandra.Commands.Modules
             var authorString = Context.Bot.GetUser(LexGlobals.AuthorId).ToString();
 
             var embedBuilder = new LocalEmbedBuilder()
-                .WithColor(LexGlobals.LexColor)
+                .WithLexColor()
                 .WithTitle(Context.Bot.CurrentUser.Name)
                 .AddField("Author", authorString)
                 .AddField("Source Code", Markdown.Link("GitHub", LexGlobals.LexRepo), true)
