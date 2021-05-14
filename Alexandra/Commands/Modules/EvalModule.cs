@@ -24,15 +24,13 @@ namespace Alexandra.Commands.Modules
         [RequireBotOwner]
         public DiscordCommandResult EvalLuaAsync([Remainder]string codeString)
         {
-            var parseSuccess = _parseService.TryParseCodeBlock(codeString, out CodeBlock codeBlock);
+            var parseSuccess = _parseService.TryParseCodeBlock(codeString, out var codeBlock);
+
+            if (!parseSuccess) return Response("It seems you haven't given me code to execute");
             
-            if(parseSuccess)
-            {
-                var evalResult = _evalService.EvalLuaCode(codeBlock);
-                return Response(evalResult);
-            }
-            
-            return Response("It seems you haven't given me code to execute");
+            var evalResult = _evalService.EvalLuaCode(codeBlock);
+            return Response(evalResult);
+
         }
     }
 }
