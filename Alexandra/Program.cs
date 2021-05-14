@@ -61,8 +61,8 @@ namespace Alexandra
                         .AddSingleton(new GitHubClient(new Octokit.ProductHeaderValue("Alexandra-The-Discord-Bot")))
                         .AddSingleton<TagHelper>()
                         .AddSingleton<NoteHelper>()
-                        .AddLexServices()
-                        .AddSingleton<Random>();
+                        .AddSingleton<Random>()
+                        .AddLexServices();
                 })
                 .Build();
 
