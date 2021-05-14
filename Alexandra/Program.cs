@@ -2,9 +2,12 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Alexandra.Common.Extensions;
+using Alexandra.Common.Globals;
 using Alexandra.Database;
 using Alexandra.Database.Helpers;
 using Alexandra.Disqord;
+using Disqord;
 using Disqord.Bot.Hosting;
 using Disqord.Gateway;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +37,7 @@ namespace Alexandra
                     var logger = new LoggerConfiguration()
                         .MinimumLevel.Debug()
                         .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                        .WriteTo.Console(theme: SystemConsoleTheme.Grayscale)
+                        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}",theme: SystemConsoleTheme.Grayscale)
                         .CreateLogger();
                     x.AddSerilog(logger, true);
 
@@ -45,6 +48,7 @@ namespace Alexandra
                 {
                     bot.Token = context.Configuration["token"];
                     bot.Intents = GatewayIntents.All;
+                    bot.OwnerIds = new Snowflake[] {new Snowflake(LexGlobals.AuthorId)};
                     bot.UseMentionPrefix = true;
                     bot.Prefixes = new[] {"lex"};
                 })
@@ -57,12 +61,14 @@ namespace Alexandra
                         .AddSingleton(new GitHubClient(new Octokit.ProductHeaderValue("Alexandra-The-Discord-Bot")))
                         .AddSingleton<TagHelper>()
                         .AddSingleton<NoteHelper>()
+                        .AddLexServices()
                         .AddSingleton<Random>();
                 })
                 .Build();
 
             try
             {
+                Console.WriteLine(LexGlobals.LexAscii);
                 host.Run();
             }
             catch (Exception e)
