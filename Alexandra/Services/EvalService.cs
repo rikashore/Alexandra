@@ -1,5 +1,4 @@
 ﻿using Alexandra.Common.Extensions;
-using Alexandra.Common.Types;
 using Disqord;
 using Microsoft.Extensions.Logging;
 using MoonSharp.Interpreter;
@@ -11,12 +10,12 @@ namespace Alexandra.Services
         public EvalService(ILogger<EvalService> logger) : base(logger)
         { }
 
-        public LocalEmbedBuilder EvalLuaCode(CodeBlock codeBlock)
+        public LocalEmbedBuilder EvalLuaCode(string codeBlock)
         {
             try
             {
                 var script = new Script();
-                var res = script.DoString(codeBlock.Text);
+                var res = script.DoString(codeBlock);
 
                 object resString = res.Type switch
                 {
@@ -36,22 +35,22 @@ namespace Alexandra.Services
                     _ => "no return type"
                 };
 
-                var codeReturn = new CodeBlock(resString.ToString(), "lua");
+                var codeReturn = Markdown.CodeBlock("lua", resString.ToString());
 
                 var resEmbed = new LocalEmbedBuilder()
                     .WithTitle("Evaluation Success")
-                    .WithDescription(codeReturn.ToString())
+                    .WithDescription(codeReturn)
                     .WithLexColor();
 
                 return resEmbed;
             }
             catch (ScriptRuntimeException scriptRuntimeException)
             {
-                var errCodeBlock = new CodeBlock(scriptRuntimeException.DecoratedMessage, "lua");
+                var errCodeBlock = Markdown.CodeBlock("lua", scriptRuntimeException.DecoratedMessage);
 
                 var errEmbed = new LocalEmbedBuilder()
-                    .WithTitle($"An error occured, Runtime Exception")
-                    .WithDescription(errCodeBlock.ToString())
+                    .WithTitle("An error occured, Runtime Exception")
+                    .WithDescription(errCodeBlock)
                     .WithLexColor();
                 
                 Logger.LogError("Unsuccessfully evaluated Lua code, Runtime Exception");
@@ -60,11 +59,11 @@ namespace Alexandra.Services
             }
             catch (SyntaxErrorException syntaxErrorException)
             {
-                var errCodeBlock = new CodeBlock(syntaxErrorException.DecoratedMessage, "lua");
+                var errCodeBlock =  Markdown.CodeBlock("lua", syntaxErrorException.DecoratedMessage);
 
                 var errEmbed = new LocalEmbedBuilder()
-                    .WithTitle($"An error occured, Syntax Exception")
-                    .WithDescription(errCodeBlock.ToString())
+                    .WithTitle("An error occured, Syntax Exception")
+                    .WithDescription(errCodeBlock)
                     .WithLexColor();
                 
                 Logger.LogError("Unsuccessfully evaluated Lua code, Syntax exception");
