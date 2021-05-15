@@ -155,18 +155,16 @@ namespace Alexandra.Commands.Modules
             try
             {
                 var result = await _lexGithubClient.User.Get(username);
-                
-                var gitUsername = result.Name ?? result.HtmlUrl.Substring(result.HtmlUrl.LastIndexOf('/') + 1);
 
                 var eb = new LocalEmbedBuilder()
-                    .WithTitle(gitUsername)
+                    .WithTitle(result.Name ?? result.Login)
                     .WithUrl(result.HtmlUrl)
                     .WithThumbnailUrl(result.AvatarUrl)
                     .WithDescription(result.Bio ?? "No Bio")
                     .WithLexColor()
-                    .AddField("Followers", result.Followers.ToString(), true)
-                    .AddField("Following", result.Following.ToString(), true)
-                    .AddBlankField(true)
+                    .AddField("Followers", result.Followers, true)
+                    .AddField("Following", result.Following, true)
+                    .AddField("Repositories", result.PublicRepos, true)
                     .AddField("Location", result.Location ?? "No Location")
                     .AddField("Account created at", result.CreatedAt.ToString());
 
@@ -212,8 +210,7 @@ namespace Alexandra.Commands.Modules
                 var result = await _lexGithubClient.Issue.Get(repoId, issueNumber);
 
                 var resultText = result.Body.Length > 1024 ? result.Body.Substring(0, 1000) + "..." : result.Body;
-                var userText = result.User.Name ??
-                               result.User.HtmlUrl.Substring(result.User.HtmlUrl.LastIndexOf('/') + 1);
+                var userText = result.User.Name ?? result.User.Login;
 
                 var eb = new LocalEmbedBuilder()
                     .WithTitle(result.Title)
