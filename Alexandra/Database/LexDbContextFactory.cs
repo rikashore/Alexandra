@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
@@ -14,9 +13,8 @@ namespace Alexandra.Database
                 .Build();
             
             var optionsBuilder = new DbContextOptionsBuilder<LexDbContext>();
-            optionsBuilder.UseMySql(
-                config["dbconn"],
-                new MySqlServerVersion(new Version(8, 0, 21)));
+            optionsBuilder.UseNpgsql(config["dbconn"])
+                .UseSnakeCaseNamingConvention();
 
             return new LexDbContext(optionsBuilder.Options);
         }
