@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Alexandra.Common.Types;
-using Alexandra.Services;
-using Disqord;
+﻿using Alexandra.Services;
 using Disqord.Bot;
 using Qmmands;
 
@@ -26,11 +23,11 @@ namespace Alexandra.Commands.Modules
         {
             var parseSuccess = _parseService.TryParseCodeBlock(codeString, out var codeBlock);
 
-            if (!parseSuccess) return Response("It seems you haven't given me code to execute");
+            if (!parseSuccess) 
+                return Response("It seems you haven't given me code to execute");
             
             var evalResult = _evalService.EvalLuaCode(codeBlock);
             return Response(evalResult);
-
         }
     }
 }

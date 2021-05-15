@@ -4,8 +4,6 @@ using Alexandra.Common.Extensions;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Extensions.Interactivity.Menus.Paged;
-using Disqord.Gateway;
-using Disqord.Rest;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules

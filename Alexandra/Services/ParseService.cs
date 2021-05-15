@@ -1,7 +1,5 @@
 ﻿using System;
-using Alexandra.Common.Types;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace Alexandra.Services
 {
@@ -10,7 +8,7 @@ namespace Alexandra.Services
         public ParseService(ILogger<ParseService> logger) : base(logger)
         { }
 
-        public bool TryParseCodeBlock(string s, out CodeBlock codeBlock)
+        public bool TryParseCodeBlock(string s, out string codeBlock)
         {
             codeBlock = null;
             
@@ -24,7 +22,7 @@ namespace Alexandra.Services
             if (cs1 == -1 || cs2 == -1)
                 return false;
 
-            codeBlock = new CodeBlock(s.Substring(cs1, cs2 - cs1));
+            codeBlock = s.Substring(cs1, cs2 - cs1);
             return true;
         }
     }

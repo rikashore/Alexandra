@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
 using Alexandra.Database;
@@ -41,14 +40,14 @@ namespace Alexandra
                         .CreateLogger();
                     x.AddSerilog(logger, true);
 
-                    x.Services.Remove(x.Services.First(x => x.ServiceType == typeof(ILogger<>)));
+                    x.Services.Remove(x.Services.First(serviceDescriptor => serviceDescriptor.ServiceType == typeof(ILogger<>)));
                     x.Services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
                 })
                 .ConfigureDiscordBot<LexDisqordBot>((context, bot) =>
                 {
                     bot.Token = context.Configuration["token"];
                     bot.Intents = GatewayIntents.All;
-                    bot.OwnerIds = new Snowflake[] {new Snowflake(LexGlobals.AuthorId)};
+                    bot.OwnerIds = new[] {new Snowflake(LexGlobals.AuthorId)};
                     bot.UseMentionPrefix = true;
                     bot.Prefixes = new[] {"lex"};
                 })
@@ -56,9 +55,9 @@ namespace Alexandra
                 {
                     var connection = context.Configuration["dbconn"];
                     services.AddDbContext<LexDbContext>(x => 
-                            x.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 21))))
+                            x.UseNpgsql(connection).UseSnakeCaseNamingConvention())
                         .AddSingleton<HttpClient>()
-                        .AddSingleton(new GitHubClient(new Octokit.ProductHeaderValue("Alexandra-The-Discord-Bot")))
+                        .AddSingleton(new GitHubClient(new ProductHeaderValue("Alexandra-The-Discord-Bot")))
                         .AddSingleton<TagHelper>()
                         .AddSingleton<NoteHelper>()
                         .AddSingleton<Random>()

@@ -22,7 +22,7 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("create", "make")]
-        [Qmmands.Description("Creates a note for you, you can retrieve it later")]
+        [Description("Creates a note for you, you can retrieve it later")]
         public async Task<DiscordCommandResult> MakeNoteAsync([Remainder] string content)
         {
             await _noteHelper.CreateNoteAsync(content, Context.Author.Id, DateTime.Now);
