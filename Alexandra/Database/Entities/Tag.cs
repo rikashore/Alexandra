@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Disqord;
 
 namespace Alexandra.Database.Entities
@@ -9,6 +10,7 @@ namespace Alexandra.Database.Entities
         public Snowflake GuildId { get; set; }
         public Snowflake OwnerId { get; set; }
         public string Content { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
         public uint Revisions { get; set; }
         public uint Uses { get; set; }
     }
