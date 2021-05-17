@@ -13,7 +13,7 @@ namespace Alexandra.Database
                 .Build();
             
             var optionsBuilder = new DbContextOptionsBuilder<LexDbContext>();
-            optionsBuilder.UseNpgsql(config["dbconn"])
+            optionsBuilder.UseNpgsql(config["database:connection"])
                 .UseSnakeCaseNamingConvention();
 
             return new LexDbContext(optionsBuilder.Options);
