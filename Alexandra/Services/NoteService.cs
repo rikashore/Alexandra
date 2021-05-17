@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Alexandra.Database;
 using Alexandra.Database.Entities;
 using Disqord;
 using Microsoft.EntityFrameworkCore;
 
-namespace Alexandra.Database.Helpers
+namespace Alexandra.Services
 {
-    public class NoteHelper
+    public class NoteService
     {
         private readonly LexDbContext _lexDbContext;
 
-        public NoteHelper(LexDbContext lexDbContext)
+        public NoteService(LexDbContext lexDbContext)
         {
             _lexDbContext = lexDbContext;
         }

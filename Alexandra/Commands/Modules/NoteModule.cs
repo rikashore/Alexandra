@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
-using Alexandra.Database.Helpers;
+using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Rest;
@@ -14,18 +14,18 @@ namespace Alexandra.Commands.Modules
     [Group("note", "notes")]
     public class NoteModule : DiscordModuleBase
     {
-        private readonly NoteHelper _noteHelper;
+        private readonly NoteService _noteService;
 
-        public NoteModule(NoteHelper noteHelper)
+        public NoteModule(NoteService noteService)
         {
-            _noteHelper = noteHelper;
+            _noteService = noteService;
         }
 
         [Command("create", "make")]
         [Description("Creates a note for you, you can retrieve it later")]
         public async Task<DiscordCommandResult> MakeNoteAsync([Remainder] string content)
         {
-            await _noteHelper.CreateNoteAsync(content, Context.Author.Id, DateTime.Now);
+            await _noteService.CreateNoteAsync(content, Context.Author.Id, DateTime.Now);
             return Response("Note Created!");
         }
 
@@ -33,7 +33,7 @@ namespace Alexandra.Commands.Modules
         [Description("Retrieve all your notes")]
         public async Task<DiscordCommandResult> ListNotesAsync()
         {
-            var notes = await _noteHelper.RetrieveNotesAsync(Context.Author.Id);
+            var notes = await _noteService.RetrieveNotesAsync(Context.Author.Id);
 
             switch (notes.Count)
             {
@@ -66,7 +66,7 @@ namespace Alexandra.Commands.Modules
         [Description("retrieve a particular note")]
         public async Task<DiscordCommandResult> GetNoteAsync(int id)
         {
-            var note = await _noteHelper.RetrieveNoteAsync(id);
+            var note = await _noteService.RetrieveNoteAsync(id);
 
             if (note is null)
                 return Response("A note with that Id does not exist");
@@ -86,14 +86,14 @@ namespace Alexandra.Commands.Modules
         [Description("Delete a particular note")]
         public async Task<DiscordCommandResult> DeleteNoteAsync(int id)
         {
-            var note = await _noteHelper.RetrieveNoteAsync(id);
+            var note = await _noteService.RetrieveNoteAsync(id);
 
             if (note is null)
                 return Response("It seems no note with that ID was found");
             else if (note.OwnerId != Context.Author.Id)
                 return Response("I cannot allow you to delete another user's note");
 
-            await _noteHelper.DeleteNoteAsync(note);
+            await _noteService.DeleteNoteAsync(note);
             return Response("I have removed that note");
         }
 
@@ -101,14 +101,14 @@ namespace Alexandra.Commands.Modules
         [Description("change the contents of your note")]
         public async Task<DiscordCommandResult> EditNote(int id, [Remainder] string content)
         {
-            var note = await _noteHelper.RetrieveNoteAsync(id);
+            var note = await _noteService.RetrieveNoteAsync(id);
 
             if (note is null)
                 return Response("It seems no note with that ID was found");
             if (note.OwnerId != Context.Author.Id)
                 return Response("I cannot allow you to delete another user's note");
 
-            await _noteHelper.EditNoteAsync(note, content);
+            await _noteService.EditNoteAsync(note, content);
             return Response("The contents of that note have changed");
         }
         
