@@ -30,13 +30,13 @@ namespace Alexandra.Commands.Modules
             _commandService = commandService;
         }
         
-        [Command]
+        [Command("")]
         public async Task<DiscordCommandResult> GetTagAsync(string tagName)
         {
             var tag = await _tagService.RetrieveTagAsync(tagName, Context.GuildId);
 
             if (tag is null)
-                return Response("It seems no tag with that name could be found.");
+                return await TagNotFoundResponse(tagName);
 
             return Response(tag.Content);
         }
@@ -48,6 +48,8 @@ namespace Alexandra.Commands.Modules
                 return Response("It seems a tag with this name already exists.");
             if (!IsTagNameValid(tagName))
                 return Response($"The tag name \"{tagName}\" is forbidden, please choose another name.");
+            if (content.Length > 2000)
+                return Response("A tag's content can't be longer than 200 characters long.");
 
             var tag = new Tag
             {
