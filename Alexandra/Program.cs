@@ -9,7 +9,6 @@ using Alexandra.Services;
 using Disqord;
 using Disqord.Bot.Hosting;
 using Disqord.Gateway;
-using MerriamWebster.NET;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,24 +45,20 @@ namespace Alexandra
                 })
                 .ConfigureDiscordBot<LexDisqordBot>((context, bot) =>
                 {
-                    bot.Token = context.Configuration["token"];
-                    bot.Intents = GatewayIntents.All;
+                    bot.Token = context.Configuration["discord:token"];
+                    bot.Intents = GatewayIntents.Recommended;
                     bot.OwnerIds = new[] {new Snowflake(LexGlobals.AuthorId)};
                     bot.UseMentionPrefix = true;
-                    bot.Prefixes = new[] {"lex"};
+                    bot.Prefixes = context.Configuration.GetSection("discord:prefixes").Get<string[]>();
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    var mw = context.Configuration.GetSection("MerriamWebster").Get<MerriamWebsterConfig>();
-                    var connection = context.Configuration["dbconn"];
+                    var connection = context.Configuration["database:connection"];
                     services.AddDbContext<LexDbContext>(x => 
                             x.UseNpgsql(connection).UseSnakeCaseNamingConvention())
                         .AddSingleton<HttpClient>()
                         .AddSingleton(new GitHubClient(new ProductHeaderValue("Alexandra-The-Discord-Bot")))
-                        .AddSingleton<TagHelper>()
-                        .AddSingleton<NoteService>()
                         .AddSingleton<Random>()
-                        .RegisterMerriamWebster(mw)
                         .AddLexServices();
                 })
                 .Build();
