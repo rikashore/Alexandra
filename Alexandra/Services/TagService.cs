@@ -5,15 +5,17 @@ using Alexandra.Database;
 using Alexandra.Database.Entities;
 using Disqord;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MinimumEditDistance;
+using Serilog;
 
 namespace Alexandra.Services
 {
-    public class TagHelper
+    public class TagService : LexService
     {
         private readonly LexDbContext _lexDbContext;
 
-        public TagHelper(LexDbContext lexDbContext)
+        public TagService(ILogger<TagService> logger,LexDbContext lexDbContext) : base(logger)
         {
             _lexDbContext = lexDbContext;
         }

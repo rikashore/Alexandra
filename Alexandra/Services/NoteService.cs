@@ -6,14 +6,15 @@ using Alexandra.Database;
 using Alexandra.Database.Entities;
 using Disqord;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Alexandra.Services
 {
-    public class NoteService
+    public class NoteService : LexService
     {
         private readonly LexDbContext _lexDbContext;
 
-        public NoteService(LexDbContext lexDbContext)
+        public NoteService(ILogger<NoteService> logger,LexDbContext lexDbContext) : base(logger)
         {
             _lexDbContext = lexDbContext;
         }
