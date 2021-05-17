@@ -4,21 +4,13 @@ using Alexandra.Common.Extensions;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Extensions.Interactivity.Menus.Paged;
-using MerriamWebster.NET;
-using MerriamWebster.NET.Parsing;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
 {
     public class FunModule : DiscordGuildModuleBase
     {
-        private readonly IEntryParser _entryParser;
 
-        public FunModule(IEntryParser entryParser)
-        {
-            _entryParser = entryParser;
-        }
-        
         [Command("avatar", "av")]
         [Description("Receive a portrait of yourself or another person")]
         public DiscordCommandResult AvatarAsync(IMember member = null)
@@ -32,7 +24,7 @@ namespace Alexandra.Commands.Modules
 
             return Response(eb);
         }
-        
+
         [Group("color")]
         public class ColorModule : DiscordModuleBase
         {
@@ -44,7 +36,7 @@ namespace Alexandra.Commands.Modules
             }
 
             private int RandomHexColor()
-             => _random.Next(0x1000000);
+                => _random.Next(0x1000000);
 
             private byte[] RandomRgbColor()
             {
@@ -52,14 +44,14 @@ namespace Alexandra.Commands.Modules
                 _random.NextBytes(color);
                 return color;
             }
-            
+
             [Command("hex")]
             [Description("Brew random shades through hex")]
             public async Task HexColorsAsync(int amount = 1)
             {
                 if (amount <= 5)
                 {
-                    for(int i = 1; i <= amount; i++)
+                    for (int i = 1; i <= amount; i++)
                     {
                         var color = RandomHexColor();
                         var colorEmbed = new LocalEmbedBuilder()
@@ -68,10 +60,10 @@ namespace Alexandra.Commands.Modules
 
                         await Response(colorEmbed);
                     }
-                    
+
                     return;
                 }
-                
+
                 var colorPages = new Page[amount];
 
                 for (int i = 0; i < amount; i++)
@@ -84,6 +76,7 @@ namespace Alexandra.Commands.Modules
 
                     colorPages[i] = colorEmbed;
                 }
+
                 await Pages(colorPages);
             }
 
@@ -93,7 +86,7 @@ namespace Alexandra.Commands.Modules
             {
                 if (amount <= 5)
                 {
-                    for(int i = 1; i <= amount; i++)
+                    for (int i = 1; i <= amount; i++)
                     {
                         var color = RandomRgbColor();
                         var colorEmbed = new LocalEmbedBuilder()
@@ -102,10 +95,10 @@ namespace Alexandra.Commands.Modules
 
                         await Response(colorEmbed);
                     }
-                    
+
                     return;
                 }
-                
+
                 var colorPages = new Page[amount];
 
                 for (int i = 0; i < amount; i++)
@@ -117,6 +110,7 @@ namespace Alexandra.Commands.Modules
 
                     colorPages[i] = colorEmbed;
                 }
+
                 await Pages(colorPages);
             }
 
@@ -136,7 +130,7 @@ namespace Alexandra.Commands.Modules
 
                         await Response(colorEmbed);
                     }
-                    
+
                     return;
                 }
 
