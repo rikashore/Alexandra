@@ -7,5 +7,8 @@ namespace Alexandra.Common.Extensions
     {
         public static LocalEmbedBuilder WithLexColor(this LocalEmbedBuilder builder)
             => builder.WithColor(LexGlobals.LexColor);
+
+        public static LocalEmbedBuilder WithErrorColor(this LocalEmbedBuilder builder)
+            => builder.WithColor(new Color(161, 11, 11));
     }
 }
