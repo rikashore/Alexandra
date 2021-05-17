@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Common.Extensions;
 using Alexandra.Database.Entities;
+using Alexandra.Disqord;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
@@ -19,7 +20,7 @@ namespace Alexandra.Commands.Modules
     [Group("tag", "tags", "t")]
     [Name("Tag")]
     [Description("Commands relating to tags")]
-    public class TagModule : DiscordGuildModuleBase
+    public class TagModule : LexGuildModuleBase
     {
         private readonly TagService _tagService;
         private readonly CommandService _commandService;
@@ -194,15 +195,5 @@ namespace Alexandra.Commands.Modules
                 .First(x => x.Type == typeof(TagModule)).Commands
                 .All(x => x.Aliases
                     .All(y => !string.Equals(y, name, StringComparison.CurrentCultureIgnoreCase)));
-        
-        private async Task<DiscordCommandResult> TagNotFoundResponse(string name)
-        {
-            var closeTags = await _tagService.SearchTagsAsync(Context.GuildId, name);
-            if (closeTags.Count == 0) 
-                return Response($"I couldn't find a tag with the name \"{name}\".");
-            
-            var didYouMean = " • " + string.Join("\n • ", closeTags.Take(3).Select(x => x.Name));
-            return Response($"It seems I couldn't find a tag with the name \"{name}\", did you mean...\n{didYouMean}");
-        }
     }
 }

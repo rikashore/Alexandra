@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
+using Alexandra.Disqord;
 using Disqord;
 using Disqord.Bot;
 using Octokit;
@@ -10,7 +11,7 @@ using Qmmands;
 namespace Alexandra.Commands.Modules
 {
     [Group("git")]
-    public class GithubModule : DiscordModuleBase
+    public class GithubModule : LexGuildModuleBase
     {
         private readonly GitHubClient _lexGithubClient;
 
@@ -20,11 +21,11 @@ namespace Alexandra.Commands.Modules
         }
         
         [Group("search")]
-        public class SearchModule : DiscordModuleBase
+        public class SearchGuildModule : LexGuildModuleBase
         {
             private readonly GitHubClient _lexGithubClient;
             
-            public SearchModule(GitHubClient lexGithubClient)
+            public SearchGuildModule(GitHubClient lexGithubClient)
             {
                 _lexGithubClient = lexGithubClient;
             }
@@ -38,7 +39,7 @@ namespace Alexandra.Commands.Modules
                 switch (result.Items.Count)
                 {
                     case 0:
-                        return Response("It seems no results have been found.");
+                        return NoResultsFoundResponse();
                     default:
                     {
                         var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
@@ -76,7 +77,7 @@ namespace Alexandra.Commands.Modules
                 switch (result.Items.Count)
                 {
                     case 0:
-                        return Response("It seems no results have been found.");
+                        return NoResultsFoundResponse();
                     default:
                     {
                         var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
@@ -120,7 +121,7 @@ namespace Alexandra.Commands.Modules
             }
             catch (NotFoundException)
             {
-                return Response("It seems, a repository with that name could not be found, perchance try again.");
+                return NotFoundResponse("repository");
             }
 
         }
@@ -145,7 +146,7 @@ namespace Alexandra.Commands.Modules
             }
             catch (NotFoundException)
             {
-                return Response("It seems, a repository with that name could not be found, perchance try again.");
+                return NotFoundResponse("repository");
             }
         }
 
@@ -172,7 +173,7 @@ namespace Alexandra.Commands.Modules
             }
             catch (NotFoundException)
             {
-                return Response("It seems no user with that name could be found, perchance try again.");
+                return NotFoundResponse("user");
             }
         }
 
@@ -197,7 +198,7 @@ namespace Alexandra.Commands.Modules
             }
             catch (NotFoundException)
             {
-                return Response("It seems that an issue could not be found");
+                return NotFoundResponse("issue");
             }
         }
 
@@ -223,7 +224,7 @@ namespace Alexandra.Commands.Modules
             }
             catch (NotFoundException)
             {
-                return Response("It seems that an issue could not be found");
+                return NotFoundResponse("issue");
             }
         }
     }
