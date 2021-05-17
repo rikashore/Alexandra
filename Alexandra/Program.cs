@@ -4,11 +4,12 @@ using System.Net.Http;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
 using Alexandra.Database;
-using Alexandra.Database.Helpers;
 using Alexandra.Disqord;
+using Alexandra.Services;
 using Disqord;
 using Disqord.Bot.Hosting;
 using Disqord.Gateway;
+using MerriamWebster.NET;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,14 +54,16 @@ namespace Alexandra
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    var mw = context.Configuration.GetSection("MerriamWebster").Get<MerriamWebsterConfig>();
                     var connection = context.Configuration["dbconn"];
                     services.AddDbContext<LexDbContext>(x => 
                             x.UseNpgsql(connection).UseSnakeCaseNamingConvention())
                         .AddSingleton<HttpClient>()
                         .AddSingleton(new GitHubClient(new ProductHeaderValue("Alexandra-The-Discord-Bot")))
                         .AddSingleton<TagHelper>()
-                        .AddSingleton<NoteHelper>()
+                        .AddSingleton<NoteService>()
                         .AddSingleton<Random>()
+                        .RegisterMerriamWebster(mw)
                         .AddLexServices();
                 })
                 .Build();
