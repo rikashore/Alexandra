@@ -51,7 +51,7 @@ namespace Alexandra.Services
                 var errEmbed = new LocalEmbedBuilder()
                     .WithTitle("An error occured, Runtime Exception")
                     .WithDescription(errCodeBlock)
-                    .WithLexColor();
+                    .WithErrorColor();
                 
                 Logger.LogError("Unsuccessfully evaluated Lua code, Runtime Exception");
                 
@@ -64,7 +64,7 @@ namespace Alexandra.Services
                 var errEmbed = new LocalEmbedBuilder()
                     .WithTitle("An error occured, Syntax Exception")
                     .WithDescription(errCodeBlock)
-                    .WithLexColor();
+                    .WithErrorColor();
                 
                 Logger.LogError("Unsuccessfully evaluated Lua code, Syntax exception");
 
