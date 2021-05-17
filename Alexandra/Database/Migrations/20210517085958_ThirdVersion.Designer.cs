@@ -3,15 +3,17 @@ using System;
 using Alexandra.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Alexandra.Database.Migrations
 {
     [DbContext(typeof(LexDbContext))]
-    partial class LexDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210517085958_ThirdVersion")]
+    partial class ThirdVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
