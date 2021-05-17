@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Common.Extensions;
+using Alexandra.Database.Entities;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
@@ -43,14 +44,21 @@ namespace Alexandra.Commands.Modules
         [Command("add", "create")]
         public async Task<DiscordCommandResult> AddTagAsync(string tagName, [Remainder] string content)
         {
-            var tag = await _tagService.RetrieveTagAsync(tagName, Context.GuildId);
-
-            if (tag is not null)
+            if (await _tagService.RetrieveTagAsync(tagName, Context.GuildId) is not null)
                 return Response("It seems a tag with this name already exists.");
             if (!IsTagNameValid(tagName))
                 return Response($"The tag name \"{tagName}\" is forbidden, please choose another name.");
 
-            await _tagService.AddTagAsync(tagName, content, Context.GuildId, Context.Author.Id);
+            var tag = new Tag
+            {
+                GuildId = Context.GuildId,
+                OwnerId = Context.Message.Author.Id,
+                Name = tagName,
+                Content = content,
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+            await _tagService.AddTagAsync(tag);
+            
             return Response($"I have successfully added {tagName}.");
         }
 
@@ -120,6 +128,27 @@ namespace Alexandra.Commands.Modules
                 1 => Response(pages[0].Embed),
                 _ => Pages(pages)
             };
+        }
+
+        [Command("info")]
+        public async Task<DiscordCommandResult> TagInfoAsync([Remainder] string tagName)
+        {
+            var tag = await _tagService.RetrieveTagAsync(tagName, Context.GuildId);
+            if (tag is null)
+                return await TagNotFoundResponse(tagName);
+
+            var member = Context.Guild.GetMember(tag.OwnerId) ??
+                         await Context.Guild.FetchMemberAsync(tag.OwnerId);
+
+            var eb = new LocalEmbedBuilder()
+                .WithTitle($"Tag: {tag.Name}")
+                .WithLexColor()
+                .AddField("Owner", member is null ? $"{tag.OwnerId} (not in server)" : member.Mention)
+                .AddField("Uses", tag.Uses, true)
+                .AddField("Rank", $"#{await _tagService.GetTagRankAsync(tag)}", true)
+                .AddField("Created At", $"{tag.CreatedAt:yyyy-MM-dd}", true);
+
+            return Response(eb);
         }
         
         [Command("claim")]
