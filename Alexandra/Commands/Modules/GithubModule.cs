@@ -184,8 +184,7 @@ namespace Alexandra.Commands.Modules
                 var result = await _lexGithubClient.Issue.Get(ownerName, name, issueNumber);
 
                 var resultText = result.Body.Length > 1024 ? result.Body[..1000] + "..." : result.Body;
-                var userText = result.User.Name ??
-                               result.User.HtmlUrl.Substring(result.User.HtmlUrl.LastIndexOf('/') + 1);
+                var userText = result.User.Name ?? result.User.Login;
 
                 var eb = new LocalEmbedBuilder()
                     .WithTitle(result.Title)
@@ -209,7 +208,7 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.Issue.Get(repoId, issueNumber);
 
-                var resultText = result.Body.Length > 1024 ? result.Body.Substring(0, 1000) + "..." : result.Body;
+                var resultText = result.Body.Length > 1024 ? result.Body[..1000] + "..." : result.Body;
                 var userText = result.User.Name ?? result.User.Login;
 
                 var eb = new LocalEmbedBuilder()
