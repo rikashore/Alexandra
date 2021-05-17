@@ -21,6 +21,8 @@ namespace Alexandra.Database
                 static @ulong => new Snowflake(@ulong));
 
             modelBuilder.UseValueConverterForType<Snowflake>(snowflakeConverter);
+
+            modelBuilder.Entity<Tag>().HasKey("Name", "GuildId");
         }
     }
 }
