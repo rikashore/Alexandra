@@ -4,12 +4,21 @@ using Alexandra.Common.Extensions;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Extensions.Interactivity.Menus.Paged;
+using MerriamWebster.NET;
+using MerriamWebster.NET.Parsing;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
 {
     public class FunModule : DiscordGuildModuleBase
     {
+        private readonly IEntryParser _entryParser;
+
+        public FunModule(IEntryParser entryParser)
+        {
+            _entryParser = entryParser;
+        }
+        
         [Command("avatar", "av")]
         [Description("Receive a portrait of yourself or another person")]
         public DiscordCommandResult AvatarAsync(IMember member = null)
