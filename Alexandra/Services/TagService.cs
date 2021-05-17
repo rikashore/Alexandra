@@ -50,10 +50,9 @@ namespace Alexandra.Services
             return tags.OrderByDescending(x => x.Uses).TakeWhile(x => x.Name != tag.Name).Count() + 1;
         }
 
-        public async Task AddTagAsync(string tagName, string content, Snowflake guildId, Snowflake ownerId)
+        public async Task AddTagAsync(Tag tag)
         {
-            _lexDbContext.Add(new Tag {Name = tagName, Content = content, GuildId = guildId, OwnerId = ownerId});
-
+            await _lexDbContext.Tags.AddAsync(tag);
             await _lexDbContext.SaveChangesAsync();
         }
 
