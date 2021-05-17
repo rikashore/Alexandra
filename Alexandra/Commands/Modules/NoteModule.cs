@@ -90,7 +90,7 @@ namespace Alexandra.Commands.Modules
 
             if (note is null)
                 return Response("It seems no note with that ID was found");
-            else if (note.OwnerId != Context.Author.Id)
+            if (note.OwnerId != Context.Author.Id)
                 return Response("I cannot allow you to delete another user's note");
 
             await _noteService.DeleteNoteAsync(note);
