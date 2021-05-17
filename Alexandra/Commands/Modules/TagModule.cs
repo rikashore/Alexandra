@@ -20,10 +20,10 @@ namespace Alexandra.Commands.Modules
     [Description("Commands relating to tags")]
     public class TagModule : DiscordGuildModuleBase
     {
-        private readonly TagHelper _tagService;
+        private readonly TagService _tagService;
         private readonly CommandService _commandService;
         
-        public TagModule(TagHelper tagService, CommandService commandService)
+        public TagModule(TagService tagService, CommandService commandService)
         {
             _tagService = tagService;
             _commandService = commandService;
