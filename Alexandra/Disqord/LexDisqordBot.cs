@@ -9,8 +9,11 @@ namespace Alexandra.Disqord
 {
     public class LexDisqordBot : DiscordBot
     {
-        public LexDisqordBot(IOptions<DiscordBotConfiguration> options, ILogger<DiscordBot> logger,
-            IPrefixProvider prefixes, ICommandQueue queue, CommandService commands, IServiceProvider services,
-            DiscordClient client) : base(options, logger, prefixes, queue, commands, services, client) { }
+        public LexDisqordBot(IOptions<DiscordBotConfiguration> options, 
+            ILogger<DiscordBot> logger,
+            IServiceProvider services,
+            DiscordClient client) 
+            : base(options, logger, services, client) 
+        { }
     }
 }
