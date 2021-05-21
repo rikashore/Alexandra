@@ -11,6 +11,7 @@ using Qmmands;
 namespace Alexandra.Commands.Modules
 {
     [Group("git")]
+    [Name("GitHub")]
     public class GithubModule : LexGuildModuleBase
     {
         private readonly GitHubClient _lexGithubClient;
@@ -21,6 +22,7 @@ namespace Alexandra.Commands.Modules
         }
         
         [Group("search")]
+        [Name("Search")]
         public class SearchGuildModule : LexGuildModuleBase
         {
             private readonly GitHubClient _lexGithubClient;
