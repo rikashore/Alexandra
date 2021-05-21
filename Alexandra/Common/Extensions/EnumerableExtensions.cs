@@ -10,7 +10,7 @@ namespace Alexandra.Common.Extensions
 
         public static string NewlineQuote<T>(this IEnumerable<T> list)
             => $"> {string.Join("\n> ", list)}";
-        
+
         public static T Random<T>(this T[] source, Random random = null)
         {
             random ??= new Random();
