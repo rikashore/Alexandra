@@ -1,11 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Services;
 using Disqord.Bot;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Alexandra.Disqord
+namespace Alexandra.Commands.Bases
 {
     public class LexGuildModuleBase : DiscordGuildModuleBase
     {
