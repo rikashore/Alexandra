@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
 using Disqord;
@@ -12,7 +13,7 @@ using Qmmands;
 
 namespace Alexandra.Commands.Modules
 {
-    public class GeneralModule : DiscordModuleBase
+    public class GeneralModule : LexGuildModuleBase
     {
         [Command("ping")]
         [Description("A game of ping-pong shall occur")]

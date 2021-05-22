@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
 using Alexandra.Disqord;

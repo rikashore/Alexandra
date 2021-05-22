@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Disqord;
 using Disqord.Bot;
@@ -8,7 +9,7 @@ using Qmmands;
 
 namespace Alexandra.Commands.Modules
 {
-    public class FunModule : DiscordGuildModuleBase
+    public class FunModule : LexGuildModuleBase
     {
 
         [Command("avatar", "av")]

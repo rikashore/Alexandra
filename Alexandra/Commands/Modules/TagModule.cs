@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Database.Entities;
 using Alexandra.Disqord;
