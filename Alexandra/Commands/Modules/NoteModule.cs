@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
 using Alexandra.Services;
@@ -12,7 +13,7 @@ using Qmmands;
 namespace Alexandra.Commands.Modules
 {
     [Group("note", "notes")]
-    public class NoteModule : DiscordModuleBase
+    public class NoteModule : LexModuleBase
     {
         private readonly NoteService _noteService;
 
@@ -69,7 +70,7 @@ namespace Alexandra.Commands.Modules
             var note = await _noteService.RetrieveNoteAsync(id);
 
             if (note is null)
-                return Response("A note with that Id does not exist");
+                return NoteNotFoundResponse();
 
             var owner = await Context.Bot.FetchUserAsync(note.OwnerId);
             
@@ -89,9 +90,9 @@ namespace Alexandra.Commands.Modules
             var note = await _noteService.RetrieveNoteAsync(id);
 
             if (note is null)
-                return Response("It seems no note with that ID was found");
+                return NoteNotFoundResponse();
             if (note.OwnerId != Context.Author.Id)
-                return Response("I cannot allow you to delete another user's note");
+                return InvalidAccessResponse();
 
             await _noteService.DeleteNoteAsync(note);
             return Response("I have removed that note");
@@ -104,9 +105,9 @@ namespace Alexandra.Commands.Modules
             var note = await _noteService.RetrieveNoteAsync(id);
 
             if (note is null)
-                return Response("It seems no note with that ID was found");
+                return NoteNotFoundResponse();
             if (note.OwnerId != Context.Author.Id)
-                return Response("I cannot allow you to delete another user's note");
+                return InvalidAccessResponse();
 
             await _noteService.EditNoteAsync(note, content);
             return Response("The contents of that note have changed");
