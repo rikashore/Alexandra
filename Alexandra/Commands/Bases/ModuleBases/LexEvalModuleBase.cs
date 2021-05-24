@@ -1,5 +1,4 @@
-﻿using Alexandra.Commands.Modules;
-using Alexandra.Services;
+﻿using Alexandra.Services;
 using Disqord.Bot;
 using Microsoft.Extensions.DependencyInjection;
 

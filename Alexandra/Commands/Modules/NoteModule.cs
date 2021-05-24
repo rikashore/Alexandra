@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alexandra.Commands.Bases.ModuleBases;
+using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
 using Alexandra.Services;
@@ -13,7 +13,7 @@ using Qmmands;
 namespace Alexandra.Commands.Modules
 {
     [Group("note", "notes")]
-    public class NoteModule : LexNoteModuleBase
+    public class NoteModule : LexModuleBase
     {
         private readonly NoteService _noteService;
 
@@ -112,6 +112,11 @@ namespace Alexandra.Commands.Modules
             await _noteService.EditNoteAsync(note, content);
             return Response("The contents of that note have changed");
         }
-        
+
+        private DiscordCommandResult InvalidAccessResponse()
+            => Response("I cannot let you edit other's notes");
+
+        private DiscordCommandResult NoteNotFoundResponse()
+            => Response("No note with that ID could be found");
     }
 }
