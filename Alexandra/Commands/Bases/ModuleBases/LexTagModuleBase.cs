@@ -8,7 +8,7 @@ namespace Alexandra.Commands.Bases.ModuleBases
 {
     public class LexTagModuleBase : LexGuildModuleBase
     {
-        private TagService TagService => Context.Services.GetRequiredService<TagService>();
+        protected TagService TagService => Context.Services.GetRequiredService<TagService>();
 
         protected async Task<DiscordCommandResult> TagNotFoundResponse(string name)
         {
