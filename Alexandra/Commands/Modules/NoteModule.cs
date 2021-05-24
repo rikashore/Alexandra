@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alexandra.Commands.Bases;
+using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
 using Alexandra.Services;
@@ -13,7 +13,7 @@ using Qmmands;
 namespace Alexandra.Commands.Modules
 {
     [Group("note", "notes")]
-    public class NoteModule : LexModuleBase
+    public class NoteModule : LexNoteModuleBase
     {
         private readonly NoteService _noteService;
 

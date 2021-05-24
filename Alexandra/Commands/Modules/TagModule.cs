@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Alexandra.Commands.Bases;
+using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Database.Entities;
-using Alexandra.Disqord;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
@@ -21,7 +20,7 @@ namespace Alexandra.Commands.Modules
     [Group("tag", "tags", "t")]
     [Name("Tag")]
     [Description("Commands relating to tags")]
-    public class TagModule : LexGuildModuleBase
+    public class TagModule : LexTagModuleBase
     {
         private readonly TagService _tagService;
         private readonly CommandService _commandService;

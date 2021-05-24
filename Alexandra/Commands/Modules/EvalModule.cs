@@ -1,5 +1,4 @@
-﻿using Alexandra.Commands.Bases;
-using Alexandra.Services;
+﻿using Alexandra.Commands.Bases.ModuleBases;
 using Disqord;
 using Disqord.Bot;
 using Qmmands;
@@ -7,17 +6,8 @@ using Qmmands;
 namespace Alexandra.Commands.Modules
 {
     [Group("eval")]
-    public class EvalModule : LexModuleBase
+    public class EvalModule : LexEvalModuleBase
     {
-        private readonly EvalService _evalService;
-        private readonly ParseService _parseService;
-
-        public EvalModule(EvalService evalService, ParseService parseService)
-        {
-            _evalService = evalService;
-            _parseService = parseService;
-        }
-        
         [Command("Lua")]
         [Description("Evaluate some Lua code")]
         [RequireBotOwner]
@@ -32,12 +22,12 @@ namespace Alexandra.Commands.Modules
                     return InvalidCodeResponse();
             }
             
-            var parseSuccess = _parseService.TryParseCodeBlock(codeString, out var codeBlock);
+            var parseSuccess = ParseService.TryParseCodeBlock(codeString, out var codeBlock);
 
             if (!parseSuccess) 
                 return InvalidCodeResponse();
             
-            var evalResult = _evalService.EvalLuaCode(codeBlock);
+            var evalResult = EvalService.EvalLuaCode(codeBlock);
             return Response(evalResult);
         }
     }
