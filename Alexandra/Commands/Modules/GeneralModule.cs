@@ -13,6 +13,7 @@ using Qmmands;
 
 namespace Alexandra.Commands.Modules
 {
+    [Name("General")]
     public class GeneralModule : LexGuildModuleBase
     {
         [Command("ping")]
@@ -131,12 +132,12 @@ namespace Alexandra.Commands.Modules
                         .AddField("Aliases", foundCommand.Aliases is null
                             ? "No aliases"
                             : string.Join(", ", foundCommand.Aliases.Select(Markdown.Code)))
-                        .AddField("Usage", foundCommand.Parameters is null
+                        .AddField("Parameters", foundCommand.Parameters.Count == 0
                                 ? "No parameters"
                                 : string.Join(' ', foundCommand.Parameters.Select(FormatParameter)));
 
-                    if (foundCommand.Parameters is not null)
-                        eb.AddField("Parameters", string.Join('\n', 
+                    if (foundCommand.Parameters.Count != 0)
+                        eb.AddField("Parameter Descriptions", string.Join('\n', 
                             foundCommand.Parameters.Select(x => $"{x.Name}: {x.Description ?? "No description"}")));
 
                     return Reply(eb);
@@ -148,10 +149,11 @@ namespace Alexandra.Commands.Modules
                         .WithDescription(foundModule.Description ?? "No Description")
                         .WithLexColor()
                         .AddField("Submodules",
-                            foundModule.Submodules is null
+                            foundModule.Submodules.Count == 0
                                 ? "No submodules"
-                                : string.Join(' ', foundModule.Submodules.Select(x => Markdown.Code(x.Name))))
-                        .AddField("Commands", string.Join(' ', foundModule.Commands.Select(x => Markdown.Code(x.Name))));
+                                : string.Join('\n', foundModule.Submodules.Select(x => Markdown.Code(x.Name))))
+                        .AddField("Commands", string.Join(' ', foundModule.Commands.Where(x => !string.IsNullOrEmpty(x.Name))
+                            .Select(x => Markdown.Code(x.Name))));
 
                     return Reply(eb);
                 }
