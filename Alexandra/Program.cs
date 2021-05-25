@@ -48,6 +48,7 @@ namespace Alexandra
                     bot.Token = context.Configuration["discord:token"];
                     bot.Intents = GatewayIntents.Recommended;
                     bot.OwnerIds = new[] {new Snowflake(LexGlobals.AuthorId)};
+                    bot.Activities = new[] {new LocalActivity("lexhelp", ActivityType.Playing)};
                     bot.UseMentionPrefix = true;
                     bot.Prefixes = context.Configuration.GetSection("discord:prefixes").Get<string[]>();
                 })
