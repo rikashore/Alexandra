@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
-using Alexandra.Disqord;
 using Disqord;
 using Disqord.Bot;
 using Octokit;
@@ -13,6 +12,7 @@ namespace Alexandra.Commands.Modules
 {
     [Group("git")]
     [Name("GitHub")]
+    [Description("Commands relating to GitHub")]
     public class GithubModule : LexGuildModuleBase
     {
         private readonly GitHubClient _lexGithubClient;
@@ -24,6 +24,7 @@ namespace Alexandra.Commands.Modules
         
         [Group("search")]
         [Name("Search")]
+        [Description("Search users and repositories on GitHub")]
         public class SearchGuildModule : LexGuildModuleBase
         {
             private readonly GitHubClient _lexGithubClient;
@@ -34,6 +35,7 @@ namespace Alexandra.Commands.Modules
             }
             
             [Command("repo")]
+            [Description("Search for repositories")]
             public async Task<DiscordCommandResult> GitSearchReposAsync([Name("Search Query"), Remainder] string searchQuery)
             {
                 var request = new SearchRepositoriesRequest(searchQuery);
@@ -72,6 +74,7 @@ namespace Alexandra.Commands.Modules
             }
 
             [Command("user")]
+            [Description("Search for users")]
             public async Task<DiscordCommandResult> GitSearchUsersAsync([Name("Search Query"), Remainder] string searchQuery)
             {
                 var request = new SearchUsersRequest(searchQuery);
@@ -103,6 +106,7 @@ namespace Alexandra.Commands.Modules
 
 
         [Command("repo")]
+        [Description("Get a particular repository")]
         public async Task<DiscordCommandResult> GetRepoAsync([Name("Repository")] string repoName)
         {
             var details = repoName.Split("/");
@@ -130,9 +134,10 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("repo")]
+        [Description("Get a particular repository")]
         public async Task<DiscordCommandResult> GetRepoAsync(
-            [Name("Username")] string username, 
-            [Name("Repository Name")] string repoName)
+            [Name("Username"), Description("The owner of the repository")] string username, 
+            [Name("Repository Name"), Description("The name of the repository")] string repoName)
         {
             try
             {
@@ -154,7 +159,8 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("user")]
-        public async Task<DiscordCommandResult> GetUserAsync(string username)
+        [Description("Get a particular user")]
+        public async Task<DiscordCommandResult> GetUserAsync([Description("The username of the user")] string username)
         {
             try
             {
@@ -181,7 +187,11 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("issue")]
-        public async Task<DiscordCommandResult> GetIssueAsync(string ownerName, string name, int issueNumber)
+        [Description("Get a particular issue")]
+        public async Task<DiscordCommandResult> GetIssueAsync(
+            [Name("Owner Name"), Description("The owner of the repository where the issue is")] string ownerName, 
+            [Description("The name of the repository")] string name, 
+            [Description("The issue number")] int issueNumber)
         {
             try
             {
@@ -206,7 +216,9 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("issue")]
-        public async Task<DiscordCommandResult> GetIssueAsync(long repoId, int issueNumber)
+        public async Task<DiscordCommandResult> GetIssueAsync(
+            [Name("Repo Id"), Description("The Id of the repository where the issue is")] long repoId, 
+            [Name("Issue Number"), Description("The issue number")] int issueNumber)
         {
             try
             {

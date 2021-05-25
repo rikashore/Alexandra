@@ -9,12 +9,14 @@ using Qmmands;
 
 namespace Alexandra.Commands.Modules
 {
+    [Name("Fun")]
+    [Description("A few miscellaneous and fun commands")]
     public class FunModule : LexGuildModuleBase
     {
 
         [Command("avatar", "av")]
         [Description("Receive a portrait of yourself or another person")]
-        public DiscordCommandResult AvatarAsync(IMember member = null)
+        public DiscordCommandResult AvatarAsync([Description("The member for whom you wish to receive a portrait")] IMember member = null)
         {
             member ??= Context.Author;
 
@@ -27,6 +29,8 @@ namespace Alexandra.Commands.Modules
         }
 
         [Group("color")]
+        [Name("Color")]
+        [Description("Brew some random colors")]
         public class ColorModule : DiscordModuleBase
         {
             private readonly Random _random;
@@ -48,7 +52,7 @@ namespace Alexandra.Commands.Modules
 
             [Command("hex")]
             [Description("Brew random shades through hex")]
-            public async Task HexColorsAsync(int amount = 1)
+            public async Task HexColorsAsync([Description("The amount of shades to brew")] int amount = 1)
             {
                 if (amount <= 5)
                 {
@@ -83,7 +87,7 @@ namespace Alexandra.Commands.Modules
 
             [Command("rgb")]
             [Description("Brew random shades through rgb")]
-            public async Task RgbColorsAsync(int amount = 1)
+            public async Task RgbColorsAsync([Description("The amount of shades to brew")] int amount = 1)
             {
                 if (amount <= 5)
                 {
@@ -117,7 +121,7 @@ namespace Alexandra.Commands.Modules
 
             [Command("hsv")]
             [Description("Brew random shades through hsv")]
-            public async Task HsvColorsAsync(int amount = 1)
+            public async Task HsvColorsAsync([Description("The amount of shades to brew")] int amount = 1)
             {
                 if (amount <= 5)
                 {
@@ -154,7 +158,8 @@ namespace Alexandra.Commands.Modules
 
         [Command("choose", "choice")]
         [Description("Receive a choice")]
-        public DiscordCommandResult ChoiceAsync([Remainder] string choice)
+        public DiscordCommandResult ChoiceAsync(
+            [Description("The string of choices"), Remainder] string choice)
         {
             var choices = choice.Split("|");
 

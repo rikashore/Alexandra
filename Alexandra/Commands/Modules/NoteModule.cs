@@ -13,6 +13,8 @@ using Qmmands;
 namespace Alexandra.Commands.Modules
 {
     [Group("note", "notes")]
+    [Name("Note")]
+    [Description("Take a few notes")]
     public class NoteModule : LexModuleBase
     {
         private readonly NoteService _noteService;
@@ -24,7 +26,9 @@ namespace Alexandra.Commands.Modules
 
         [Command("create", "make")]
         [Description("Creates a note for you, you can retrieve it later")]
-        public async Task<DiscordCommandResult> MakeNoteAsync([Remainder] string content)
+        public async Task<DiscordCommandResult> MakeNoteAsync(
+            [Description("The content of your new note")]
+            [Remainder] string content)
         {
             await _noteService.CreateNoteAsync(content, Context.Author.Id, DateTime.Now);
             return Response("Note Created!");
@@ -65,7 +69,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("get", "retrieve")]
         [Description("retrieve a particular note")]
-        public async Task<DiscordCommandResult> GetNoteAsync(int id)
+        public async Task<DiscordCommandResult> GetNoteAsync([Description("The Id of the note")] int id)
         {
             var note = await _noteService.RetrieveNoteAsync(id);
 
@@ -85,7 +89,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("delete", "del", "remove")]
         [Description("Delete a particular note")]
-        public async Task<DiscordCommandResult> DeleteNoteAsync(int id)
+        public async Task<DiscordCommandResult> DeleteNoteAsync([Description("The Id of the note")] int id)
         {
             var note = await _noteService.RetrieveNoteAsync(id);
 
@@ -100,7 +104,8 @@ namespace Alexandra.Commands.Modules
 
         [Command("edit", "change", "modify")]
         [Description("change the contents of your note")]
-        public async Task<DiscordCommandResult> EditNote(int id, [Remainder] string content)
+        public async Task<DiscordCommandResult> EditNote([Description("The Id of the note")] int id,
+            [Description("The new content of your note"), Remainder] string content)
         {
             var note = await _noteService.RetrieveNoteAsync(id);
 

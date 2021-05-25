@@ -6,12 +6,15 @@ using Qmmands;
 namespace Alexandra.Commands.Modules
 {
     [Group("eval")]
+    [Name("Eval")]
+    [Description("Commands that evaluate certain pieces of code")]
+    [RequireBotOwner]
     public class EvalModule : LexEvalModuleBase
     {
         [Command("Lua")]
         [Description("Evaluate some Lua code")]
-        [RequireBotOwner]
-        public DiscordCommandResult EvalLuaAsync([Remainder]string codeString = null)
+        public DiscordCommandResult EvalLuaAsync(
+            [Name("Code String"), Description("The code to execute"), Remainder] string codeString = null)
         {
             if (codeString == null)
             {

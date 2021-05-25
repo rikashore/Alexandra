@@ -32,7 +32,7 @@ namespace Alexandra.Commands.Modules
         }
         
         [Command("")]
-        public async Task<DiscordCommandResult> GetTagAsync(string tagName)
+        public async Task<DiscordCommandResult> GetTagAsync([Name("Tag Name"), Description("The tag to find")] string tagName)
         {
             var tag = await _tagService.RetrieveTagAsync(tagName, Context.GuildId);
 
@@ -43,7 +43,9 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("add", "create")]
-        public async Task<DiscordCommandResult> AddTagAsync(string tagName, [Remainder] string content)
+        [Description("Create a new tag")]
+        public async Task<DiscordCommandResult> AddTagAsync([Name("Tag Name"), Description("The tag name to create")] string tagName, 
+            [Description("The content of the new tag") ,Remainder] string content)
         {
             if (await _tagService.RetrieveTagAsync(tagName, Context.GuildId) is not null)
                 return Response("It seems a tag with this name already exists.");
@@ -66,7 +68,8 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("delete", "del", "remove")]
-        public async Task<DiscordCommandResult> DeleteTagAsync(string tagName)
+        [Description("Delete a tag")]
+        public async Task<DiscordCommandResult> DeleteTagAsync([Name("Tag Name"), Description("The tag to delete"), Remainder] string tagName)
         {
             var tag = await _tagService.RetrieveTagAsync(tagName, Context.GuildId);
 
@@ -80,7 +83,9 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("edit")]
-        public async Task<DiscordCommandResult> EditTagAsync(string tagName, [Remainder] string newContent)
+        [Description("Edit your own tag")]
+        public async Task<DiscordCommandResult> EditTagAsync([Name("Tag Name"), Description("The tag to edit")] string tagName,
+            [Name("New content"), Description("The new content of the tag"), Remainder] string newContent)
         {
             var tag = await _tagService.RetrieveTagAsync(tagName, Context.GuildId);
 
@@ -94,6 +99,7 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("list")]
+        [Description("List all the tags of this guild")]
         public async Task<DiscordCommandResult> ListTagsAsync()
         {
             var tags = await _tagService.RetrieveTagsAsync(Context.GuildId);
@@ -134,7 +140,8 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("info")]
-        public async Task<DiscordCommandResult> TagInfoAsync([Remainder] string tagName)
+        [Description("Receive some info about a particular tag")]
+        public async Task<DiscordCommandResult> TagInfoAsync([Name("Tag Name"), Description("The tag to find"), Remainder] string tagName)
         {
             var tag = await _tagService.RetrieveTagAsync(tagName, Context.GuildId);
             if (tag is null)
@@ -155,7 +162,8 @@ namespace Alexandra.Commands.Modules
         }
         
         [Command("claim")]
-        public async Task<DiscordCommandResult> Claim([Remainder] string name)
+        [Description("Claim a tag as your own")]
+        public async Task<DiscordCommandResult> Claim([Description("The name of the tag to claim"), Remainder] string name)
         {
             var tag = await _tagService.RetrieveTagAsync(name ,Context.GuildId);
             if (tag is null) 
@@ -174,7 +182,9 @@ namespace Alexandra.Commands.Modules
         }
         
         [Command("transfer")]
-        public async Task<DiscordCommandResult> Transfer(string name, [Remainder] [RequireNotBot] IMember member)
+        [Description("Transfer ownership of a command")]
+        public async Task<DiscordCommandResult> Transfer([Description("The tag to transfer")] string name, 
+            [Description("The member to transfer to"), Remainder, RequireNotBot] IMember member)
         {
             var tag = await _tagService.RetrieveTagAsync(name,Context.GuildId);
             if (tag is null) 
