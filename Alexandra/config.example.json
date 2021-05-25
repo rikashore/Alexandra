@@ -1,0 +1,9 @@
+﻿{
+  "discord" : {
+    "token" : "your token",
+    "prefixes" : ["your", "prefixes"]
+  },
+  "database" : {
+    "connection" : "Host=;Database=;Username=;Password="
+  }
+}
