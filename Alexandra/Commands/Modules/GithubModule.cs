@@ -216,6 +216,7 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("issue")]
+        [Description("Get a particular issue")]
         public async Task<DiscordCommandResult> GetIssueAsync(
             [Name("Repo Id"), Description("The Id of the repository where the issue is")] long repoId, 
             [Name("Issue Number"), Description("The issue number")] int issueNumber)
