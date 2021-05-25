@@ -131,9 +131,13 @@ namespace Alexandra.Commands.Modules
                         .AddField("Aliases", foundCommand.Aliases is null
                             ? "No aliases"
                             : string.Join(", ", foundCommand.Aliases.Select(Markdown.Code)))
-                        .AddField("Parameters", foundCommand.Parameters is null
+                        .AddField("Usage", foundCommand.Parameters is null
                                 ? "No parameters"
                                 : string.Join(' ', foundCommand.Parameters.Select(FormatParameter)));
+
+                    if (foundCommand.Parameters is not null)
+                        eb.AddField("Parameters", string.Join('\n', 
+                            foundCommand.Parameters.Select(x => $"{x.Name}: {x.Description ?? "No description"}")));
 
                     return Reply(eb);
                 }
