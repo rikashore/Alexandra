@@ -13,6 +13,12 @@ namespace Alexandra.Commands.Modules
     [Description("A few miscellaneous and fun commands")]
     public class FunModule : LexGuildModuleBase
     {
+        private readonly Random _random;
+
+        public FunModule(Random random)
+        {
+            _random = random;
+        }
 
         [Command("avatar", "av")]
         [Description("Receive a portrait of yourself or another person")]
@@ -166,7 +172,7 @@ namespace Alexandra.Commands.Modules
             if (choices.Length < 2)
                 return Response("I require more options.");
 
-            return Response(choices.Random());
+            return Response(choices.Random(_random));
         }
     }
 }
