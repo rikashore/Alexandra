@@ -34,6 +34,24 @@ namespace Alexandra.Commands.Modules
             return Response(eb);
         }
 
+        [Command("userinfo", "whois", "uinfo")]
+        public DiscordCommandResult UserInfo(IMember member = null)
+        {
+            member ??= Context.Author;
+
+            var eb = new LocalEmbedBuilder()
+                .WithTitle(member.Tag)
+                .WithThumbnailUrl(member.GetAvatarUrl())
+                .WithLexColor()
+                .AddField("Id", member.Id, true)
+                .AddField("Nickname", member.Nick ?? "No nickname in this server", true)
+                .AddField("Joined At", member.JoinedAt.Value.ToString("f"), true)
+                .AddField("Is Bot", member.IsBot ? "Yes" : "No")
+                .AddField("Created At", member.CreatedAt.ToString("f"));
+
+            return Response(eb);
+        }
+
         [Group("color")]
         [Name("Color")]
         [Description("Brew some random colors")]
