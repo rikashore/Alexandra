@@ -55,9 +55,11 @@ namespace Alexandra
                 .ConfigureServices((context, services) =>
                 {
                     var connection = context.Configuration["database:connection"];
+                    
+                    services.AddHttpClient<ColorService>();
+                    
                     services.AddDbContext<LexDbContext>(x => 
                             x.UseNpgsql(connection).UseSnakeCaseNamingConvention())
-                        .AddSingleton<HttpClient>()
                         .AddSingleton(new GitHubClient(new ProductHeaderValue("Alexandra-The-Discord-Bot")))
                         .AddSingleton<Random>()
                         .AddLexServices();
