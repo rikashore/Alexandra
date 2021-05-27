@@ -83,8 +83,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("choose", "choice")]
         [Description("Receive a choice")]
-        public DiscordCommandResult ChoiceAsync(
-            [Description("The string of choices"), Remainder] string choice)
+        public DiscordCommandResult ChoiceAsync([Description("The string of choices"), Remainder] string choice)
         {
             var choices = choice.Split("|");
 
