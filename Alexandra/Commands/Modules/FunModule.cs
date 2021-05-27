@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
+using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Extensions.Interactivity.Menus.Paged;
@@ -13,10 +16,12 @@ namespace Alexandra.Commands.Modules
     [Description("A few miscellaneous and fun commands")]
     public class FunModule : LexGuildModuleBase
     {
+        private readonly ColorService _colorService;
         private readonly Random _random;
 
-        public FunModule(Random random)
+        public FunModule(ColorService colorService, Random random)
         {
+            _colorService = colorService;
             _random = random;
         }
 
@@ -34,7 +39,7 @@ namespace Alexandra.Commands.Modules
             return Response(eb);
         }
 
-        [Command("userinfo", "whois", "uinfo")]
+        [Command("userinfo", "whois")]
         public DiscordCommandResult UserInfo(IMember member = null)
         {
             member ??= Context.Author;
@@ -52,132 +57,28 @@ namespace Alexandra.Commands.Modules
             return Response(eb);
         }
 
-        [Group("color")]
-        [Name("Color")]
-        [Description("Brew some random colors")]
-        public class ColorModule : DiscordModuleBase
+        [Command("color"), RunMode(RunMode.Parallel)]
+        [Description("Brews random colors")]
+        public async Task RandomColorAsync()
         {
-            private readonly Random _random;
-
-            public ColorModule(Random random)
+            var color = Color.Random;
+            var colorImagePath = _colorService.GetColorImage(color.ToString());
+            using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
             {
-                _random = random;
+                var eb = new LocalEmbedBuilder()
+                    .WithColor(color)
+                    .WithDescription($"Hex: {color.ToString()}\nRGB: {color.R} {color.G} {color.B}")
+                    .WithImageUrl("attachment://colorImage.png");
+
+                var mb = new LocalMessageBuilder()
+                    .WithAttachments(colorImage)
+                    .WithEmbed(eb)
+                    .Build();
+
+                await Response(mb);
             }
-
-            private int RandomHexColor()
-                => _random.Next(0x1000000);
-
-            private byte[] RandomRgbColor()
-            {
-                var color = new byte[3];
-                _random.NextBytes(color);
-                return color;
-            }
-
-            [Command("hex")]
-            [Description("Brew random shades through hex")]
-            public async Task HexColorsAsync([Description("The amount of shades to brew")] int amount = 1)
-            {
-                if (amount <= 5)
-                {
-                    for (int i = 1; i <= amount; i++)
-                    {
-                        var color = RandomHexColor();
-                        var colorEmbed = new LocalEmbedBuilder()
-                            .WithDescription($"#{color:X6}")
-                            .WithColor(new Color(color));
-
-                        await Response(colorEmbed);
-                    }
-
-                    return;
-                }
-
-                var colorPages = new Page[amount];
-
-                for (int i = 0; i < amount; i++)
-                {
-                    var color = RandomHexColor();
-
-                    var colorEmbed = new LocalEmbedBuilder()
-                        .WithDescription($"#{color:X6}")
-                        .WithColor(new Color(color));
-
-                    colorPages[i] = colorEmbed;
-                }
-
-                await Pages(colorPages);
-            }
-
-            [Command("rgb")]
-            [Description("Brew random shades through rgb")]
-            public async Task RgbColorsAsync([Description("The amount of shades to brew")] int amount = 1)
-            {
-                if (amount <= 5)
-                {
-                    for (int i = 1; i <= amount; i++)
-                    {
-                        var color = RandomRgbColor();
-                        var colorEmbed = new LocalEmbedBuilder()
-                            .WithDescription(string.Join(", ", color))
-                            .WithColor(new Color(color[0], color[1], color[2]));
-
-                        await Response(colorEmbed);
-                    }
-
-                    return;
-                }
-
-                var colorPages = new Page[amount];
-
-                for (int i = 0; i < amount; i++)
-                {
-                    var color = RandomRgbColor();
-                    var colorEmbed = new LocalEmbedBuilder()
-                        .WithDescription(string.Join(", ", color))
-                        .WithColor(new Color(color[0], color[1], color[2]));
-
-                    colorPages[i] = colorEmbed;
-                }
-
-                await Pages(colorPages);
-            }
-
-            [Command("hsv")]
-            [Description("Brew random shades through hsv")]
-            public async Task HsvColorsAsync([Description("The amount of shades to brew")] int amount = 1)
-            {
-                if (amount <= 5)
-                {
-                    for (int i = 1; i <= amount; i++)
-                    {
-                        var color = Color.Random;
-
-                        var colorEmbed = new LocalEmbedBuilder()
-                            .WithDescription(color.ToString())
-                            .WithColor(color);
-
-                        await Response(colorEmbed);
-                    }
-
-                    return;
-                }
-
-                var colorPages = new Page[amount];
-
-                for (int i = 0; i < amount; i++)
-                {
-                    var color = Color.Random;
-
-                    var colorEmbed = new LocalEmbedBuilder()
-                        .WithDescription(color.ToString())
-                        .WithColor(color);
-
-                    colorPages[i] = colorEmbed;
-                }
-
-                await Pages(colorPages);
-            }
+            
+            File.Delete(colorImagePath);
         }
 
         [Command("choose", "choice")]
