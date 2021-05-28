@@ -54,7 +54,7 @@ namespace Alexandra.Commands.Modules
             if (path.Length == 0)
             {
                 var builder = new LocalEmbedBuilder()
-                    .WithColor(0x2F3136);
+                    .WithLexColor();
                 if (modules.Count != 0)
                 {
                     var aliases = modules.Select(x => x.Aliases[0])
@@ -71,9 +71,7 @@ namespace Alexandra.Commands.Modules
                     builder.AddField("Commands", string.Join(", ", aliases));
                 }
 
-                if (builder.Fields.Count == 0)
-                    return Reply("Nothing to display.");
-                return Reply(builder);
+                return builder.Fields.Count == 0 ? Reply("Nothing to display.") : Reply(builder);
             }
             else
             {
@@ -152,7 +150,7 @@ namespace Alexandra.Commands.Modules
                             foundModule.Submodules.Count == 0
                                 ? "No submodules"
                                 : string.Join('\n', foundModule.Submodules.Select(x => Markdown.Code(x.Name))))
-                        .AddField("Commands", string.Join(' ', foundModule.Commands.Where(x => !string.IsNullOrEmpty(x.Name))
+                        .AddField("Commands", string.Join('\n', foundModule.Commands.Where(x => !string.IsNullOrEmpty(x.Name))
                             .Select(x => Markdown.Code(x.Name))));
 
                     return Reply(eb);
@@ -160,7 +158,7 @@ namespace Alexandra.Commands.Modules
             }
         }
 
-        private string FormatParameter(Parameter parameter)
+        private static string FormatParameter(Parameter parameter)
         {
             string format;
             if (parameter.IsMultiple)
@@ -169,7 +167,7 @@ namespace Alexandra.Commands.Modules
             }
             else
             {
-                string str = parameter.IsRemainder ? "{0}…" : "{0}";
+                var str = parameter.IsRemainder ? "{0}…" : "{0}";
                 format = parameter.IsOptional ? "[" + str + "]" : "<" + str + ">";
             }
             return string.Format(format, parameter.Name);
