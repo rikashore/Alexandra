@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
+using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
 using Octokit;
@@ -16,10 +19,12 @@ namespace Alexandra.Commands.Modules
     public class SearchModule : LexGuildModuleBase
     {
         private readonly GitHubClient _lexGithubClient;
+        private readonly ColorService _colorService;
                     
-        public SearchModule(GitHubClient lexGithubClient)
+        public SearchModule(GitHubClient lexGithubClient, ColorService colorService)
         {
             _lexGithubClient = lexGithubClient;
+            _colorService = colorService;
         }
                     
         [Command("repo")]
@@ -96,6 +101,79 @@ namespace Alexandra.Commands.Modules
             }
         }
 
+        [Command("color"), RunMode(RunMode.Parallel)]
+        [Description("Search for a particular shade of your choosing\nUses The Color API")]
+        public async Task SearchColorAsync(Color color)
+        {
+            var result = await _colorService.GetColorInfo(color.ToString().Substring(1), "hex");
+            var colorImagePath = _colorService.GetColorImage(color.ToString());
+            using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
+            {
+                var eb = new LocalEmbedBuilder()
+                    .WithTitle(result.Name.Value)
+                    .WithColor(color)
+                    .WithImageUrl("attachment://colorImage.png");
+
+                if (result.Name.ExactMatchName)
+                    eb.AddField("Hex value", result.Hex.Value);
+                else
+                    eb.AddField("Closest Match Hex", result.Name.ClosestNamedHex);
+
+                eb.AddField("RGB", result.Rgb.Value)
+                    .AddField("HSL", result.Hsl.Value)
+                    .AddField("HSV", result.Hsv.Value)
+                    .AddField("CMYK", result.Cmyk.Value);
+
+                var mb = new LocalMessageBuilder()
+                    .WithAttachments(colorImage)
+                    .WithEmbed(eb)
+                    .Build();
+
+                await Response(mb);
+            }
+            
+            File.Delete(colorImagePath);
+        }
+        
+        [Command("color"), RunMode(RunMode.Parallel)]
+        [Description("Search for a particular shade of your choosing\nUses The Color API")]
+        public async Task SearchColorAsync(
+            [Description("The R component"), Range(0, 256)] int r, 
+            [Description("The G component"), Range(0, 256)] int g, 
+            [Description("The B component"), Range(0, 256)] int b)
+        {
+            var color = new Color(Convert.ToByte(r), Convert.ToByte(g), Convert.ToByte(b));
+            var result = await _colorService.GetColorInfo(color.ToString().Substring(1), "hex");
+            var colorImagePath = _colorService.GetColorImage(color.ToString());
+            
+            using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
+            {
+                var eb = new LocalEmbedBuilder()
+                    .WithTitle(result.Name.Value)
+                    .WithColor(color)
+                    .WithImageUrl("attachment://colorImage.png");
+
+                if (result.Name.ExactMatchName)
+                    eb.AddField("Hex value", result.Hex.Value);
+                else
+                    eb.AddField("Closest Match Hex", result.Name.ClosestNamedHex);
+
+                eb.AddField("RGB", result.Rgb.Value)
+                    .AddField("HSL", result.Hsl.Value)
+                    .AddField("HSV", result.Hsv.Value)
+                    .AddField("CMYK", result.Cmyk.Value);
+
+                var mb = new LocalMessageBuilder()
+                    .WithAttachments(colorImage)
+                    .WithEmbed(eb)
+                    .Build();
+
+                await Response(mb);
+            }
+            
+            File.Delete(colorImagePath);
+        }
+        
         private string GetRepoSearchResultDescription(Repository repository)
         {
             if (repository.Description is null)
