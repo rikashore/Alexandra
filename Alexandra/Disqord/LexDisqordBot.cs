@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Alexandra.Commands.TypeParsers;
 using Disqord;
 using Disqord.Bot;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Qmmands;
 
 namespace Alexandra.Disqord
 {
@@ -15,5 +17,11 @@ namespace Alexandra.Disqord
             DiscordClient client) 
             : base(options, logger, services, client) 
         { }
+
+        protected override ValueTask AddTypeParsersAsync(CancellationToken cancellationToken = default)
+        {
+            Commands.AddTypeParser(new CodeBlockTypeParser());
+            return base.AddTypeParsersAsync(cancellationToken);
+        }
     }
 }
