@@ -2,8 +2,10 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Alexandra.Common.Types;
 using ImageMagick;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Alexandra.Services
 {
@@ -13,6 +15,7 @@ namespace Alexandra.Services
         
         public ColorService(ILogger<ColorService> logger, HttpClient client) : base(logger)
         {
+            client.BaseAddress = new Uri("https://www.thecolorapi.com/");
             _client = client;
         }
 
@@ -22,6 +25,14 @@ namespace Alexandra.Services
             var path = $"{Guid.NewGuid()}.png";
             image.Write(path);
             return path;
+        }
+
+        public async Task<ColorInfoData> GetColorInfo(string colorString, string colorType)
+        {
+            var response = await _client.GetStringAsync($"/id?{colorType}={colorString}");
+            var result = JsonConvert.DeserializeObject<ColorInfoData>(response);
+
+            return result;
         }
     }
 }
