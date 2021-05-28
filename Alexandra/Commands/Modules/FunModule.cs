@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Extensions.Interactivity.Menus.Paged;
+using Disqord.Gateway;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
@@ -43,7 +45,7 @@ namespace Alexandra.Commands.Modules
         public DiscordCommandResult UserInfo(IMember member = null)
         {
             member ??= Context.Author;
-
+            
             var eb = new LocalEmbedBuilder()
                 .WithTitle(member.Tag)
                 .WithThumbnailUrl(member.GetAvatarUrl())
@@ -62,6 +64,29 @@ namespace Alexandra.Commands.Modules
         public async Task RandomColorAsync()
         {
             var color = Color.Random;
+            var colorImagePath = _colorService.GetColorImage(color.ToString());
+            using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
+            {
+                var eb = new LocalEmbedBuilder()
+                    .WithColor(color)
+                    .WithDescription($"Hex: {color.ToString()}\nRGB: {color.R} {color.G} {color.B}")
+                    .WithImageUrl("attachment://colorImage.png");
+
+                var mb = new LocalMessageBuilder()
+                    .WithAttachments(colorImage)
+                    .WithEmbed(eb)
+                    .Build();
+
+                await Response(mb);
+            }
+            
+            File.Delete(colorImagePath);
+        }
+        
+        [Command("color"), RunMode(RunMode.Parallel)]
+        [Description("Brews random colors")]
+        public async Task RandomColorAsync(Color color)
+        {
             var colorImagePath = _colorService.GetColorImage(color.ToString());
             using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
             {
