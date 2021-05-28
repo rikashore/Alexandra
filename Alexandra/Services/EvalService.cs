@@ -14,7 +14,7 @@ namespace Alexandra.Services
         {
             try
             {
-                var script = new Script();
+                var script = new Script(CoreModules.Preset_SoftSandbox);
                 var res = script.DoString(codeBlock);
 
                 object resString = res.Type switch
