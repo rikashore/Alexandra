@@ -1,4 +1,5 @@
 ﻿using Alexandra.Commands.Bases.ModuleBases;
+using Alexandra.Commands.TypeParsers;
 using Disqord;
 using Disqord.Bot;
 using Qmmands;
@@ -14,23 +15,9 @@ namespace Alexandra.Commands.Modules
         [Command("Lua")]
         [Description("Evaluate some Lua code")]
         public DiscordCommandResult EvalLuaAsync(
-            [Name("Code String"), Description("The code to execute"), Remainder] string codeString = null)
+            [Name("Code String"), Description("The code to execute"), OverrideTypeParser(typeof(CodeBlockTypeParser)), Remainder] string codeString)
         {
-            if (codeString == null)
-            {
-                var reference = Context.Message.ReferencedMessage.GetValueOrDefault();
-                if (reference is not null)
-                    codeString = reference.Content;
-                else
-                    return InvalidCodeResponse();
-            }
-            
-            var parseSuccess = ParseService.TryParseCodeBlock(codeString, out var codeBlock);
-
-            if (!parseSuccess) 
-                return InvalidCodeResponse();
-            
-            var evalResult = EvalService.EvalLuaCode(codeBlock);
+            var evalResult = EvalService.EvalLuaCode(codeString);
             return Response(evalResult);
         }
     }
