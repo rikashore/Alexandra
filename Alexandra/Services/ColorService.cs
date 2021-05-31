@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Alexandra.Common.Types;
@@ -27,7 +26,7 @@ namespace Alexandra.Services
             return path;
         }
 
-        public async Task<ColorInfoData> GetColorInfo(string colorString, string colorType)
+        public async Task<ColorInfoData> GetColorInfo(string colorType, string colorString)
         {
             var response = await _client.GetStringAsync($"/id?{colorType}={colorString}");
             var result = JsonConvert.DeserializeObject<ColorInfoData>(response);
