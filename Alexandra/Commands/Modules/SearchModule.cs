@@ -8,6 +8,7 @@ using Alexandra.Common.Utilities;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Rest;
 using Octokit;
 using Qmmands;
 
@@ -77,7 +78,7 @@ namespace Alexandra.Commands.Modules
                         .WithLexColor();
                     
                     foreach (var item in result.Items)
-                        eb.AddField(item.Name, $"{item.Bio ?? ""} ({Markdown.Link("GitHub page", item.HtmlUrl)})");
+                        eb.AddField(item.Name, $"{GetUserSearchResultBio(item)} ({Markdown.Link("GitHub page", item.HtmlUrl)})");
                     
 
                     return Response(eb);
@@ -89,7 +90,7 @@ namespace Alexandra.Commands.Modules
                     foreach (var item in result.Items)
                     {
                         fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName(item.Name)
-                            .WithValue($"{item.Name}, {item.Bio ?? ""} ({Markdown.Link("GitHub page", item.HtmlUrl)})"));
+                            .WithValue($"{item.Name}, {GetUserSearchResultBio(item)} ({Markdown.Link("GitHub page", item.HtmlUrl)})"));
                     }
 
                     var config =
@@ -105,7 +106,7 @@ namespace Alexandra.Commands.Modules
         [Description("Search for a particular shade of your choosing\nUses The Color API")]
         public async Task SearchColorAsync(Color color)
         {
-            var result = await _colorService.GetColorInfo(color.ToString().Substring(1), "hex");
+            var result = await _colorService.GetColorInfo("hex", color.ToString().Substring(1));
             var colorImagePath = _colorService.GetColorImage(color.ToString());
             using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
             {
@@ -143,9 +144,9 @@ namespace Alexandra.Commands.Modules
             [Description("The B component"), Range(0, 256)] int b)
         {
             var color = new Color(Convert.ToByte(r), Convert.ToByte(g), Convert.ToByte(b));
-            var result = await _colorService.GetColorInfo(color.ToString().Substring(1), "hex");
+            var result = await _colorService.GetColorInfo("hex", color.ToString().Substring(1));
             var colorImagePath = _colorService.GetColorImage(color.ToString());
-            
+
             using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
             {
                 var eb = new LocalEmbedBuilder()
@@ -167,19 +168,27 @@ namespace Alexandra.Commands.Modules
                     .WithAttachments(colorImage)
                     .WithEmbed(eb)
                     .Build();
-
+                
                 await Response(mb);
             }
             
             File.Delete(colorImagePath);
         }
-        
+
         private string GetRepoSearchResultDescription(Repository repository)
         {
             if (repository.Description is null)
                 return "";
             
             return repository.Description.Length < 1000 ? repository.Description : "Description too long";
+        }
+
+        private string GetUserSearchResultBio(User user)
+        {
+            if (user.Bio is null)
+                return "";
+            
+            return user.Bio.Length < 1000 ? user.Bio : "Description too long";
         }
     }
 }
