@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
-using Disqord.Extensions.Interactivity.Menus.Paged;
-using Disqord.Gateway;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
