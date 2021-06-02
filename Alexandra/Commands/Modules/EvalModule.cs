@@ -24,7 +24,7 @@ namespace Alexandra.Commands.Modules
     [RequireBotOwner]
     public class EvalModule : LexEvalModuleBase
     {
-        [Command("Lua")]
+        [Command("Lua"), RunMode(RunMode.Parallel)]
         [Description("Evaluate some Lua code")]
         public DiscordCommandResult EvalLuaAsync(
             [Name("Code String"), Description("The code to execute"), OverrideTypeParser(typeof(CodeBlockTypeParser)), Remainder] string codeString)
@@ -33,7 +33,7 @@ namespace Alexandra.Commands.Modules
             return Response(evalResult);
         }
 
-        [Command]
+        [Command, RunMode(RunMode.Parallel)]
         [Description("Eval some C#")]
         public async Task<DiscordCommandResult> EvalCSharpAsync([Remainder] string code)
         {
