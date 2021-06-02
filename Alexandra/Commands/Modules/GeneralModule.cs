@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
@@ -8,6 +11,7 @@ using Alexandra.Common.Globals;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Gateway;
+using Disqord.Http;
 using Disqord.Rest;
 using Qmmands;
 
@@ -17,7 +21,7 @@ namespace Alexandra.Commands.Modules
     public class GeneralModule : LexGuildModuleBase
     {
         [Command("ping")]
-        [Description("A game of ping-pong shall occur")]
+        [Qmmands.Description("A game of ping-pong shall occur")]
         public async Task PingAsync()
         {
             var stopwatch = Stopwatch.StartNew();
@@ -28,7 +32,7 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("info")]
-        [Description("Receive information about Alexandra")]
+        [Qmmands.Description("Receive information about Alexandra")]
         public DiscordCommandResult InfoAsync()
         {
             var authorString = Context.Bot.GetUser(LexGlobals.AuthorId).ToString();
@@ -42,6 +46,70 @@ namespace Alexandra.Commands.Modules
                 .AddField("Library", Markdown.Link("Disqord " + Library.Version, Library.RepositoryUrl), true);
 
             return Response(embedBuilder);
+        }
+
+        [Command("quote")]
+        [Description("Quote the words of another")]
+        public async Task<DiscordCommandResult> QuoteMessageAsync(string quoteUrl)
+        {
+            var regex = new Regex(@"^(?:https?)://(?:(?:(?:canary|ptb)\.)?(?:discord|discordapp)\.com/channels/)(?<guild>\d+)/(?<channel>\d+)/(?<message>\d+)$", RegexOptions.IgnoreCase);
+
+            if (!regex.IsMatch(quoteUrl))
+                return Response("It seems you have not given me a valid jump URL");
+
+            var res = regex.Match(quoteUrl);
+            var channelId = Convert.ToUInt64(res.Groups["channel"].Value);
+            var messageId = Convert.ToUInt64(res.Groups["message"].Value);
+
+            IChannel channel;
+            try
+            {
+                channel = await Context.Bot.FetchChannelAsync(channelId);
+            }
+            catch (RestApiException e) when (e.StatusCode == HttpResponseStatusCode.Forbidden)
+            {
+                return Response("It seems I am unable to access that channel");
+            }
+
+            if (channel is not IGuildChannel guildChannel)
+            {
+                return Response("I cannot read messages from a DM");
+            }
+            
+            if (!Context.CurrentMember.GetChannelPermissions(guildChannel).ReadMessageHistory)
+                return Response("I don't have the necessary permissions to view this channel");
+
+            if (!Context.Author.GetChannelPermissions(guildChannel).ReadMessageHistory)
+                return Response("You don't have the necessary permissions to view this channel");
+
+            var message = await Context.Bot.FetchMessageAsync(channelId, messageId);
+            
+            var eb = new LocalEmbed()
+                .WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl())
+                .WithDescription(message.Content)
+                .WithLexColor()
+                .WithFooter($"Id: {messageId}")
+                .WithTimestamp(message.CreatedAt());
+
+            return Response(eb);
+        }
+
+        [Command("quote")]
+        [Description("Quote the words of another")]
+        public DiscordCommandResult QuoteMessageAsync()
+        {
+            var messageRef = Context.Message.ReferencedMessage.GetValueOrDefault();
+            if (messageRef is null)
+                return Response("I require a Jump URL or a reference to a message to quote");
+            
+            var eb = new LocalEmbed()
+                .WithAuthor(messageRef.Author.ToString(), messageRef.Author.GetAvatarUrl())
+                .WithDescription(messageRef.Content)
+                .WithLexColor()
+                .WithFooter($"Id: {messageRef.Id}")
+                .WithTimestamp(messageRef.CreatedAt());
+
+            return Response(eb);
         }
 
         [Command("help")]
