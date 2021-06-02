@@ -29,7 +29,7 @@ namespace Alexandra.Commands.Modules
         {
             member ??= Context.Author;
 
-            var eb = new LocalEmbedBuilder()
+            var eb = new LocalEmbed()
                 .WithTitle($"A portrait of {member.Name}#{member.Discriminator}")
                 .WithLexColor()
                 .WithImageUrl(member.GetAvatarUrl());
@@ -42,7 +42,7 @@ namespace Alexandra.Commands.Modules
         {
             member ??= Context.Author;
             
-            var eb = new LocalEmbedBuilder()
+            var eb = new LocalEmbed()
                 .WithTitle(member.Tag)
                 .WithThumbnailUrl(member.GetAvatarUrl())
                 .WithLexColor()
@@ -50,7 +50,7 @@ namespace Alexandra.Commands.Modules
                 .AddField("Nickname", member.Nick ?? "No nickname in this server", true)
                 .AddField("Joined At", member.JoinedAt.Value.ToString("f"), true)
                 .AddField("Is Bot", member.IsBot ? "Yes" : "No")
-                .AddField("Created At", member.CreatedAt.ToString("f"));
+                .AddField("Created At", member.CreatedAt());
 
             return Response(eb);
         }
@@ -61,17 +61,16 @@ namespace Alexandra.Commands.Modules
         {
             var color = Color.Random;
             var colorImagePath = _colorService.GetColorImage(color.ToString());
-            using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
+            using (var colorImage = LocalAttachment.File(colorImagePath, "colorImage.png"))
             {
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithColor(color)
                     .WithDescription($"Hex: {color.ToString()}\nRGB: {color.R} {color.G} {color.B}")
                     .WithImageUrl("attachment://colorImage.png");
 
-                var mb = new LocalMessageBuilder()
+                var mb = new LocalMessage()
                     .WithAttachments(colorImage)
-                    .WithEmbed(eb)
-                    .Build();
+                    .WithEmbed(eb);
 
                 await Response(mb);
             }
@@ -84,17 +83,16 @@ namespace Alexandra.Commands.Modules
         public async Task RandomColorAsync(Color color)
         {
             var colorImagePath = _colorService.GetColorImage(color.ToString());
-            using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
+            using (var colorImage = LocalAttachment.File(colorImagePath, "colorImage.png"))
             {
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithColor(color)
                     .WithDescription($"Hex: {color.ToString()}\nRGB: {color.R} {color.G} {color.B}")
                     .WithImageUrl("attachment://colorImage.png");
 
-                var mb = new LocalMessageBuilder()
+                var mb = new LocalMessage()
                     .WithAttachments(colorImage)
-                    .WithEmbed(eb)
-                    .Build();
+                    .WithEmbed(eb);
 
                 await Response(mb);
             }

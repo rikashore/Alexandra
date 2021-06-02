@@ -10,7 +10,7 @@ namespace Alexandra.Services
         public EvalService(ILogger<EvalService> logger) : base(logger)
         { }
 
-        public LocalEmbedBuilder EvalLuaCode(string codeBlock)
+        public LocalEmbed EvalLuaCode(string codeBlock)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace Alexandra.Services
 
                 var codeReturn = Markdown.CodeBlock("lua", resString.ToString());
 
-                var resEmbed = new LocalEmbedBuilder()
+                var resEmbed = new LocalEmbed()
                     .WithTitle("Evaluation Success")
                     .WithDescription(codeReturn)
                     .WithLexColor();
@@ -48,7 +48,7 @@ namespace Alexandra.Services
             {
                 var errCodeBlock = Markdown.CodeBlock("lua", scriptRuntimeException.DecoratedMessage);
 
-                var errEmbed = new LocalEmbedBuilder()
+                var errEmbed = new LocalEmbed()
                     .WithTitle("An error occured, Runtime Exception")
                     .WithDescription(errCodeBlock)
                     .WithErrorColor();
@@ -61,7 +61,7 @@ namespace Alexandra.Services
             {
                 var errCodeBlock =  Markdown.CodeBlock("lua", syntaxErrorException.DecoratedMessage);
 
-                var errEmbed = new LocalEmbedBuilder()
+                var errEmbed = new LocalEmbed()
                     .WithTitle("An error occured, Syntax Exception")
                     .WithDescription(errCodeBlock)
                     .WithErrorColor();

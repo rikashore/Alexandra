@@ -34,7 +34,7 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.Repository.Get(details[0], details[1]);
 
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithTitle(result.Name)
                     .WithDescription(result.Description)
                     .WithLexColor()
@@ -60,7 +60,7 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.Repository.Get(username, repoName);
 
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithTitle(result.Name)
                     .WithDescription(result.Description)
                     .WithLexColor()
@@ -83,7 +83,7 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.User.Get(username);
 
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithTitle(result.Name ?? result.Login)
                     .WithUrl(result.HtmlUrl)
                     .WithThumbnailUrl(result.AvatarUrl)
@@ -117,7 +117,7 @@ namespace Alexandra.Commands.Modules
                 var resultText = result.Body.Length > 1024 ? result.Body[..1000] + "..." : result.Body;
                 var userText = result.User.Name ?? result.User.Login;
 
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithTitle(result.Title)
                     .WithUrl(result.HtmlUrl)
                     .WithDescription(resultText)
@@ -145,7 +145,7 @@ namespace Alexandra.Commands.Modules
                 var resultText = result.Body.Length > 1024 ? result.Body[..1000] + "..." : result.Body;
                 var userText = result.User.Name ?? result.User.Login;
 
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithTitle(result.Title)
                     .WithUrl(result.HtmlUrl)
                     .WithDescription(resultText)

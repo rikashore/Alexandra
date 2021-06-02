@@ -33,7 +33,7 @@ namespace Alexandra.Commands.Modules
         {
             var authorString = Context.Bot.GetUser(LexGlobals.AuthorId).ToString();
 
-            var embedBuilder = new LocalEmbedBuilder()
+            var embedBuilder = new LocalEmbed()
                 .WithLexColor()
                 .WithTitle(Context.Bot.CurrentUser.Name)
                 .AddField("Author", authorString)
@@ -53,7 +53,7 @@ namespace Alexandra.Commands.Modules
             IReadOnlyList<Command> commands = topLevelModules.Except(modules).SelectMany(x => x.Commands).ToArray();
             if (path.Length == 0)
             {
-                var builder = new LocalEmbedBuilder()
+                var builder = new LocalEmbed()
                     .WithLexColor();
                 if (modules.Count != 0)
                 {
@@ -122,7 +122,7 @@ namespace Alexandra.Commands.Modules
                     return Reply("No module or command found matching the input.");
                 if (foundCommand != null)
                 {
-                    var eb = new LocalEmbedBuilder()
+                    var eb = new LocalEmbed()
                         .WithTitle(foundCommand.Name)
                         .WithDescription(foundCommand.Description ?? "No Description")
                         .WithLexColor()
@@ -142,7 +142,7 @@ namespace Alexandra.Commands.Modules
                 }
                 else
                 {
-                    var eb = new LocalEmbedBuilder()
+                    var eb = new LocalEmbed()
                         .WithTitle(foundModule.Name)
                         .WithDescription(foundModule.Description ?? "No Description")
                         .WithLexColor()

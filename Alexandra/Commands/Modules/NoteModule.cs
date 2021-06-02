@@ -46,7 +46,7 @@ namespace Alexandra.Commands.Modules
                     return Response("It seems you do not have any notes");
                 case <= 5:
                 {
-                    var eb = new LocalEmbedBuilder().WithLexColor();
+                    var eb = new LocalEmbed().WithLexColor();
 
                     foreach (var note in notes)
                         eb.AddField($"Note {note.Id}", note.ToString());
@@ -56,10 +56,10 @@ namespace Alexandra.Commands.Modules
                 }
                 default:
                 {
-                    var fieldBuilders = new List<LocalEmbedFieldBuilder>(notes.Count);
+                    var fieldBuilders = new List<LocalEmbedField>(notes.Count);
 
                     foreach (var note in notes)
-                        fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName($"Note {note.Id}").WithValue(note.ToString()));
+                        fieldBuilders.Add(new LocalEmbedField().WithName($"Note {note.Id}").WithValue(note.ToString()));
                     
                     var config = FieldBasedPageProviderConfiguration.Default.WithContent($"You have {notes.Count} notes");
                     return Pages(new FieldBasedPageProvider(fieldBuilders, config));
@@ -78,7 +78,7 @@ namespace Alexandra.Commands.Modules
 
             var owner = await Context.Bot.FetchUserAsync(note.OwnerId);
             
-            var eb = new LocalEmbedBuilder()
+            var eb = new LocalEmbed()
                 .WithTitle($"Note {note.Id}")
                 .WithDescription(note.ToString())
                 .WithAuthor(owner)

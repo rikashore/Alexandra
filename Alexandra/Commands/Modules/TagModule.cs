@@ -124,7 +124,7 @@ namespace Alexandra.Commands.Modules
                 stringPages.Add(current);
 
             var pages = stringPages.Select(x => new Page(
-                    new LocalEmbedBuilder()
+                    new LocalEmbed()
                         .WithLexColor()
                         .WithTitle("Tags")
                         .WithDescription(x)
@@ -150,7 +150,7 @@ namespace Alexandra.Commands.Modules
             var member = Context.Guild.GetMember(tag.OwnerId) ??
                          await Context.Guild.FetchMemberAsync(tag.OwnerId);
 
-            var eb = new LocalEmbedBuilder()
+            var eb = new LocalEmbed()
                 .WithTitle($"Tag: {tag.Name}")
                 .WithLexColor()
                 .AddField("Owner", member is null ? $"{tag.OwnerId} (not in server)" : member.Mention)

@@ -60,7 +60,7 @@ namespace Alexandra.Commands.Modules
                     stopwatch.Stop();
                     if (diagnostics.Any(x => x.Severity == DiagnosticSeverity.Error))
                     {
-                        var eb = new LocalEmbedBuilder()
+                        var eb = new LocalEmbed()
                          .WithTitle("Compilation Failure")
                         .WithDescription($"{diagnostics.Length} {(diagnostics.Length > 1 ? "errors" : "error")}")
                         .WithColor(Color.Red)
@@ -82,9 +82,9 @@ namespace Alexandra.Commands.Modules
                     var state = await script.RunAsync(globals, _ => true);
                     if (state.Exception != null)
                     {
-                        var eb = new LocalEmbedBuilder()
+                        var eb = new LocalEmbed()
                             .WithTitle("Execution Failure")
-                            .WithDescription(state.Exception.ToString().SplitInParts(LocalEmbedBuilder.MAX_DESCRIPTION_LENGTH).First())
+                            .WithDescription(state.Exception.ToString().SplitInParts(LocalEmbed.MAX_DESCRIPTION_LENGTH).First())
                             .WithColor(Color.Red)
                             .WithFooter($"{stopwatch.Elapsed.TotalMilliseconds}ms");
                         return Response(eb);

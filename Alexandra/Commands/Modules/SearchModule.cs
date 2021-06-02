@@ -41,13 +41,13 @@ namespace Alexandra.Commands.Modules
                     return NoResultsFoundResponse();
                 default:
                 {
-                    var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
+                    var fieldBuilders = new List<LocalEmbedField>(result.Items.Count);
 
                     foreach (var item in result.Items)
                     {
                         var description = GetRepoSearchResultDescription(item);
 
-                        fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName(item.Name)
+                        fieldBuilders.Add(new LocalEmbedField().WithName(item.Name)
                             .WithValue($"{description} {Markdown.Link("Link", item.HtmlUrl)}"));
                     }
 
@@ -73,7 +73,7 @@ namespace Alexandra.Commands.Modules
                     return NoResultsFoundResponse();
                 case <= 5:
                 {
-                    var eb = new LocalEmbedBuilder()
+                    var eb = new LocalEmbed()
                         .WithTitle("Search Results")
                         .WithLexColor();
                     
@@ -85,11 +85,11 @@ namespace Alexandra.Commands.Modules
                 }
                 default:
                 {
-                    var fieldBuilders = new List<LocalEmbedFieldBuilder>(result.Items.Count);
+                    var fieldBuilders = new List<LocalEmbedField>(result.Items.Count);
 
                     foreach (var item in result.Items)
                     {
-                        fieldBuilders.Add(new LocalEmbedFieldBuilder().WithName(item.Name)
+                        fieldBuilders.Add(new LocalEmbedField().WithName(item.Name)
                             .WithValue($"{item.Name}, {GetUserSearchResultBio(item)} ({Markdown.Link("GitHub page", item.HtmlUrl)})"));
                     }
 
@@ -108,9 +108,9 @@ namespace Alexandra.Commands.Modules
         {
             var result = await _colorService.GetColorInfo("hex", color.ToString().Substring(1));
             var colorImagePath = _colorService.GetColorImage(color.ToString());
-            using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
+            using (var colorImage = LocalAttachment.File(colorImagePath, "colorImage.png"))
             {
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithTitle(result.Name.Value)
                     .WithColor(color)
                     .WithImageUrl("attachment://colorImage.png");
@@ -125,10 +125,9 @@ namespace Alexandra.Commands.Modules
                     .AddField("HSV", result.Hsv.Value)
                     .AddField("CMYK", result.Cmyk.Value);
 
-                var mb = new LocalMessageBuilder()
+                var mb = new LocalMessage()
                     .WithAttachments(colorImage)
-                    .WithEmbed(eb)
-                    .Build();
+                    .WithEmbed(eb);
 
                 await Response(mb);
             }
@@ -147,9 +146,9 @@ namespace Alexandra.Commands.Modules
             var result = await _colorService.GetColorInfo("hex", color.ToString().Substring(1));
             var colorImagePath = _colorService.GetColorImage(color.ToString());
 
-            using (var colorImage = new LocalAttachment(colorImagePath, "colorImage.png"))
+            using (var colorImage = LocalAttachment.File(colorImagePath, "colorImage.png"))
             {
-                var eb = new LocalEmbedBuilder()
+                var eb = new LocalEmbed()
                     .WithTitle(result.Name.Value)
                     .WithColor(color)
                     .WithImageUrl("attachment://colorImage.png");
@@ -164,10 +163,9 @@ namespace Alexandra.Commands.Modules
                     .AddField("HSV", result.Hsv.Value)
                     .AddField("CMYK", result.Cmyk.Value);
 
-                var mb = new LocalMessageBuilder()
+                var mb = new LocalMessage()
                     .WithAttachments(colorImage)
-                    .WithEmbed(eb)
-                    .Build();
+                    .WithEmbed(eb);
                 
                 await Response(mb);
             }
