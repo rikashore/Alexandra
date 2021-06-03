@@ -52,14 +52,14 @@ namespace Alexandra.Commands.Modules
         [Description("Quote the words of another")]
         public async Task<DiscordCommandResult> QuoteMessageAsync(string quoteUrl)
         {
-            var regex = new Regex(@"^(?:https?)://(?:(?:(?:canary|ptb)\.)?(?:discord|discordapp)\.com/channels/)(?<guild>\d+)/(?<channel>\d+)/(?<message>\d+)$", RegexOptions.IgnoreCase);
+            var regex = Discord.MessageJumpLinkRegex;
 
             if (!regex.IsMatch(quoteUrl))
                 return Response("It seems you have not given me a valid jump URL");
 
             var res = regex.Match(quoteUrl);
-            var channelId = Convert.ToUInt64(res.Groups["channel"].Value);
-            var messageId = Convert.ToUInt64(res.Groups["message"].Value);
+            var channelId = Convert.ToUInt64(res.Groups["channel_id"].Value);
+            var messageId = Convert.ToUInt64(res.Groups["message_id"].Value);
 
             IChannel channel;
             try
