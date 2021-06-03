@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
+using Alexandra.Common.Globals;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Gateway;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
@@ -44,10 +47,13 @@ namespace Alexandra.Commands.Modules
         {
             member ??= Context.Author;
             
+            var roles = member.GetRoles();
+            var topRole = roles.Values.OrderByDescending(x => x.Position).First();
+            
             var eb = new LocalEmbed()
                 .WithTitle(member.Tag)
                 .WithThumbnailUrl(member.GetAvatarUrl())
-                .WithLexColor()
+                .WithColor(topRole.Color ?? LexGlobals.LexColor)
                 .AddField("Id", member.Id, true)
                 .AddField("Nickname", member.Nick ?? "No nickname in this server", true)
                 .AddField("Joined At", member.JoinedAt.Value.ToString("f"), true)
@@ -121,7 +127,7 @@ namespace Alexandra.Commands.Modules
             if (text.Length >= 25)
                 return Response("Your text to render can not be longer than 2000 characters");
             
-            var isSuccess = _figletService.ValidateFontName(fontName, out var font);
+            _figletService.ValidateFontName(fontName, out var font);
             
             if (font is null)
                 return Response("It seems you haven't provided me a valid font name to use.");
