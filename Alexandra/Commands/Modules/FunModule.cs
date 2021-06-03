@@ -15,11 +15,13 @@ namespace Alexandra.Commands.Modules
     public class FunModule : LexGuildModuleBase
     {
         private readonly ColorService _colorService;
+        private readonly FigletService _figletService;
         private readonly Random _random;
 
-        public FunModule(ColorService colorService, Random random)
+        public FunModule(ColorService colorService, FigletService figletService, Random random)
         {
             _colorService = colorService;
+            _figletService = figletService;
             _random = random;
         }
 
@@ -110,6 +112,31 @@ namespace Alexandra.Commands.Modules
                 return Response("I require more options.");
 
             return Response(choices.Random(_random));
+        }
+
+        [Command("fig", "figlet")]
+        [Description("Create some text in a FIGLet font")]
+        public DiscordCommandResult FigletFontAsync(string fontName, [Remainder] string text)
+        {
+            if (text.Length >= 25)
+                return Response("Your text to render can not be longer than 2000 characters");
+            
+            var isSuccess = _figletService.ValidateFontName(fontName, out var font);
+            
+            if (font is null)
+                return Response("It seems you haven't provided me a valid font name to use.");
+
+            return Response(_figletService.GetRenderedText(text, font));
+        }
+
+        [Command("fig", "figlet"), Priority(0)]
+        [Description("Create some text in a FIGLet font")]
+        public DiscordCommandResult FigletFontAsync([Remainder] string text)
+        {
+            if (text.Length >= 25)
+                return Response("Your text to render can not be longer than 2000 characters");
+            
+            return Response(_figletService.GetRenderedText(text, _figletService.GetFont("standard")));
         }
     }
 }
