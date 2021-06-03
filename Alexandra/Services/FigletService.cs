@@ -15,15 +15,14 @@ namespace Alexandra.Services
             AddFonts();
         }
 
-        public bool ValidateFontName(string fontName, out FiggleFont font)
+        public void ValidateFontName(string fontName, out FiggleFont font)
         {
             font = null;
             var fontNames = _figletFonts.Keys.ToArray();
 
-            if (fontNames.All(x => x != fontName)) return false;
-            
+            if (fontNames.All(x => x != fontName)) return;
+
             font = _figletFonts[fontName];
-            return true;
         }
 
         public string GetRenderedText(string text, FiggleFont font) => $"```\n{font.Render(text.ToLower())}\n```";
@@ -39,41 +38,13 @@ namespace Alexandra.Services
                 _figletFonts.Add("3d", threeD);
             }
 
-            using (var regularStream = File.OpenRead(@"Figlet\ANSI Regular.flf"))
-            {
-                var regular = FiggleFontParser.Parse(regularStream);
-                
-                _figletFonts.Add("regular", regular);
-            }
-
-            using (var shadowStream = File.OpenRead(@"Figlet\ANSI Shadow.flf"))
-            {
-                var shadow = FiggleFontParser.Parse(shadowStream);
-                
-                _figletFonts.Add("shadow", shadow);
-            }
-            
             using (var bloodyStream = File.OpenRead(@"Figlet\Bloody.flf"))
             {
                 var bloody = FiggleFontParser.Parse(bloodyStream);
                 
                 _figletFonts.Add("bloody", bloody);
             }
-            
-            using (var calvinSStream = File.OpenRead(@"Figlet\Calvin S.flf"))
-            {
-                var calvinS = FiggleFontParser.Parse(calvinSStream);
-                
-                _figletFonts.Add("calvin-s", calvinS);
-            }
-            
-            using (var deltaCorpsStream = File.OpenRead(@"Figlet\Delta Corps Priest 1.flf"))
-            {
-                var deltaCorps = FiggleFontParser.Parse(deltaCorpsStream);
-                
-                _figletFonts.Add("delta-corps", deltaCorps);
-            }
-            
+
             _figletFonts.Add("standard", FiggleFonts.Standard);
         }
     }
