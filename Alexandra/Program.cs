@@ -9,6 +9,7 @@ using Alexandra.Services;
 using Disqord;
 using Disqord.Bot.Hosting;
 using Disqord.Gateway;
+using MerriamWebster.NET;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,6 +56,7 @@ namespace Alexandra
                 .ConfigureServices((context, services) =>
                 {
                     var connection = context.Configuration["database:connection"];
+                    var mwConfig = context.Configuration.GetSection("MerriamWebster").Get<MerriamWebsterConfig>();
                     
                     services.AddHttpClient<ColorService>();
                     
@@ -62,6 +64,7 @@ namespace Alexandra
                             x.UseNpgsql(connection).UseSnakeCaseNamingConvention())
                         .AddSingleton(new GitHubClient(new ProductHeaderValue("Alexandra-The-Discord-Bot")))
                         .AddSingleton<Random>()
+                        .RegisterMerriamWebster(mwConfig)
                         .AddLexServices();
                 })
                 .Build();
