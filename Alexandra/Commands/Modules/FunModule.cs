@@ -9,6 +9,7 @@ using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Gateway;
+using Disqord.Rest;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
@@ -43,7 +44,8 @@ namespace Alexandra.Commands.Modules
         }
 
         [Command("userinfo", "whois")]
-        public DiscordCommandResult UserInfo(IMember member = null)
+        [Description("Gain information about yourself or another user")]
+        public DiscordCommandResult UserInfo([Description("The user for whom you wish to receive information")] IMember member = null)
         {
             member ??= Context.Author;
             
@@ -56,9 +58,30 @@ namespace Alexandra.Commands.Modules
                 .WithColor(topRole.Color ?? LexGlobals.LexColor)
                 .AddField("Id", member.Id, true)
                 .AddField("Nickname", member.Nick ?? "No nickname in this server", true)
+                .AddField("Is Bot", member.IsBot ? "Yes" : "No", true)
                 .AddField("Joined At", member.JoinedAt.Value.ToString("f"), true)
-                .AddField("Is Bot", member.IsBot ? "Yes" : "No")
-                .AddField("Created At", member.CreatedAt());
+                .AddField("Created At", member.CreatedAt().ToString("f"));
+
+            return Response(eb);
+        }
+
+        [Command("serverinfo", "server")]
+        [Description("Gain information about your server")]
+        public async Task<DiscordCommandResult> ServerInfoAsync()
+        {
+            var owner = await Context.Guild.FetchMemberAsync(Context.Guild.OwnerId);
+            var botMemberCount = Context.Guild.Members.Values.Count(x => x.IsBot);
+
+            var eb = new LocalEmbed()
+                .WithTitle(Context.Guild.Name)
+                .WithDescription($"**ID:** {Context.Guild.Id}\n**Owner:** {owner}")
+                .WithThumbnailUrl(Context.Guild.GetIconUrl())
+                .WithFooter("Created")
+                .WithTimestamp(Context.Guild.CreatedAt())
+                .WithLexColor()
+                .AddField("Member count", $"{Context.Guild.MemberCount} ({botMemberCount} bots)")
+                .AddField("Channels", Context.Guild.GetChannels().Count)
+                .AddField("Roles", Context.Guild.Roles.Count);
 
             return Response(eb);
         }
@@ -117,12 +140,14 @@ namespace Alexandra.Commands.Modules
             if (choices.Length < 2)
                 return Response("I require more options.");
 
-            return Response(choices.Random(_random));
+            return Response($"I choose {choices.Random(_random)}");
         }
 
         [Command("fig", "figlet")]
         [Description("Create some text in a FIGLet font")]
-        public DiscordCommandResult FigletFontAsync(string fontName, [Remainder] string text)
+        public DiscordCommandResult FigletFontAsync(
+            [Name("font name"), Description("The name of the font to render text with")] string fontName, 
+            [Description("The text to render"), Remainder] string text)
         {
             if (text.Length >= 25)
                 return Response("Your text to render can not be longer than 2000 characters");
@@ -137,12 +162,12 @@ namespace Alexandra.Commands.Modules
 
         [Command("fig", "figlet"), Priority(0)]
         [Description("Create some text in a FIGLet font")]
-        public DiscordCommandResult FigletFontAsync([Remainder] string text)
+        public DiscordCommandResult FigletFontAsync([Description("The text to render"), Remainder] string text)
         {
             if (text.Length >= 25)
                 return Response("Your text to render can not be longer than 2000 characters");
             
-            return Response(_figletService.GetRenderedText(text, _figletService.GetFont("standard")));
+            return Response(_figletService.GetStandardRenderedText(text));
         }
     }
 }
