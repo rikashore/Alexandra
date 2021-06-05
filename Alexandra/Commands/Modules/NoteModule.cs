@@ -98,7 +98,7 @@ namespace Alexandra.Commands.Modules
             if (note.OwnerId != Context.Author.Id)
                 return InvalidAccessResponse();
 
-            await _noteService.DeleteNoteAsync(note);
+            await _noteService.RemoveNoteAsync(note);
             return Response("I have removed that note");
         }
 

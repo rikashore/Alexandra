@@ -14,7 +14,7 @@ namespace Alexandra.Services
     {
         private readonly LexDbContext _lexDbContext;
 
-        public NoteService(ILogger<NoteService> logger,LexDbContext lexDbContext) : base(logger)
+        public NoteService(ILogger<NoteService> logger, LexDbContext lexDbContext) : base(logger)
         {
             _lexDbContext = lexDbContext;
         }
@@ -43,7 +43,7 @@ namespace Alexandra.Services
             await _lexDbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteNoteAsync(Note note)
+        public async Task RemoveNoteAsync(Note note)
         {
             _lexDbContext.Notes.Remove(note);
             await _lexDbContext.SaveChangesAsync();
