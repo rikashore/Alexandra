@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
+using Alexandra.Common.Utilities;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Gateway;
 using Disqord.Rest;
+using MerriamWebster.NET;
+using MerriamWebster.NET.Parsing;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
@@ -21,12 +25,14 @@ namespace Alexandra.Commands.Modules
         private readonly ColorService _colorService;
         private readonly FigletService _figletService;
         private readonly Random _random;
+        private readonly IEntryParser _entryParser;
 
-        public FunModule(ColorService colorService, FigletService figletService, Random random)
+        public FunModule(ColorService colorService, FigletService figletService, Random random, IEntryParser entryParser)
         {
             _colorService = colorService;
             _figletService = figletService;
             _random = random;
+            _entryParser = entryParser;
         }
 
         [Command("avatar", "av")]
@@ -129,6 +135,50 @@ namespace Alexandra.Commands.Modules
             }
             
             File.Delete(colorImagePath);
+        }
+        
+        [Command("word", "define", "def")]
+        [Description("Grab the definition of the word from Merriam Webster")]
+        public async Task<DiscordCommandResult> SearchWordDefinitionAsync([Remainder] string word)
+        {
+            var result = await _entryParser.GetAndParseAsync(Configuration.CollegiateDictionary, word);
+
+            switch (result.Entries.Count)
+            {
+                case 0:
+                    return NoResultsFoundResponse();
+                case <= 5:
+                {
+                    var j = 0;
+                    var le = new LocalEmbed()
+                        .WithTitle(result.SearchText)
+                        .WithLexColor();
+
+                    foreach (var entry in result.Entries)
+                    {
+                        foreach (var def in entry.ShortDefs)
+                            le.AddField($"{++j}", def);
+                    }
+
+                    return Response(le);
+                }
+                default:
+                {
+                    var fieldBuilders = new List<LocalEmbedField>(result.Entries.Count);
+                    var i = 0;
+            
+                    foreach (var entry in result.Entries)
+                    {
+                        foreach (var def in entry.ShortDefs)
+                        {
+                            fieldBuilders.Add(new LocalEmbedField().WithName($"{i++}").WithValue(def));
+                        }
+                    }
+
+                    var config = FieldBasedPageProviderConfiguration.Default.WithContent($"I found {result.Entries.Count} definitions");
+                    return Pages(new FieldBasedPageProvider(fieldBuilders, config));
+                }
+            }
         }
 
         [Command("choose", "choice")]
