@@ -3,5 +3,6 @@
 namespace Alexandra.Commands.Bases
 {
     public class LexModuleBase : DiscordModuleBase
-    { }
+    {
+    }
 }
