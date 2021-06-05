@@ -20,7 +20,7 @@ namespace Alexandra.Commands.Modules
     {
         private readonly GitHubClient _lexGithubClient;
         private readonly ColorService _colorService;
-                    
+
         public SearchModule(GitHubClient lexGithubClient, ColorService colorService)
         {
             _lexGithubClient = lexGithubClient;
@@ -77,7 +77,7 @@ namespace Alexandra.Commands.Modules
                         .WithLexColor();
                     
                     foreach (var item in result.Items)
-                        eb.AddField(item.Name, $"{GetUserSearchResultBio(item)} ({Markdown.Link("GitHub page", item.HtmlUrl)})");
+                        eb.AddField(item.Name ?? item.Login, $"{GetUserSearchResultBio(item)} ({Markdown.Link("GitHub page", item.HtmlUrl)})");
                     
 
                     return Response(eb);
@@ -89,7 +89,7 @@ namespace Alexandra.Commands.Modules
                     foreach (var item in result.Items)
                     {
                         fieldBuilders.Add(new LocalEmbedField().WithName(item.Name ?? item.Login)
-                            .WithValue($"{item.Name ?? item.Login} ({Markdown.Link("GitHub page", item.HtmlUrl)})"));
+                            .WithValue($"{item.Name ?? item.Login} {GetUserSearchResultBio(item)} ({Markdown.Link("GitHub page", item.HtmlUrl)})"));
                     }
 
                     var config =
