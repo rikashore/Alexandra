@@ -26,9 +26,9 @@ namespace Alexandra.Services
             return path;
         }
 
-        public async Task<ColorInfoData> GetColorInfo(string colorType, string colorString)
+        public async Task<ColorInfoData> GetColorInfo(string colorString)
         {
-            var response = await _client.GetStringAsync($"/id?{colorType}={colorString}");
+            var response = await _client.GetStringAsync($"/id?hex={colorString}");
             var result = JsonConvert.DeserializeObject<ColorInfoData>(response);
 
             return result;
