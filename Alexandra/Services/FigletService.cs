@@ -25,9 +25,11 @@ namespace Alexandra.Services
             font = _figletFonts[fontName];
         }
 
-        public string GetRenderedText(string text, FiggleFont font) => $"```\n{font.Render(text.ToLower())}\n```";
+        public string GetRenderedText(string text, FiggleFont font) 
+            => $"```\n{font.Render(text.ToLower())}\n```";
 
-        public FiggleFont GetFont(string fontName) => _figletFonts[fontName];
+        public string GetStandardRenderedText(string text) 
+            => GetRenderedText(text, _figletFonts["standard"]);
 
         private void AddFonts()
         {
