@@ -5,15 +5,15 @@ using Qmmands;
 
 namespace Alexandra.Commands.Checks
 {
-    public class RequireBusinessHours : DiscordCheckAttribute
+    public class RequireBusinessHoursAttribute : DiscordCheckAttribute
     {
         private int StartHour { get; } = 9;
         private int EndHour { get; } = 20;
 
-        public RequireBusinessHours()
+        public RequireBusinessHoursAttribute()
         { }
 
-        public RequireBusinessHours(int startHour, int endHour)
+        public RequireBusinessHoursAttribute(int startHour, int endHour)
         {
             StartHour = startHour;
             EndHour = endHour;
