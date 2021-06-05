@@ -8,7 +8,6 @@ using Alexandra.Common.Utilities;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
-using Disqord.Rest;
 using Octokit;
 using Qmmands;
 
@@ -89,8 +88,8 @@ namespace Alexandra.Commands.Modules
 
                     foreach (var item in result.Items)
                     {
-                        fieldBuilders.Add(new LocalEmbedField().WithName(item.Name)
-                            .WithValue($"{item.Name}, {GetUserSearchResultBio(item)} ({Markdown.Link("GitHub page", item.HtmlUrl)})"));
+                        fieldBuilders.Add(new LocalEmbedField().WithName(item.Name ?? item.Login)
+                            .WithValue($"{item.Name ?? item.Login} ({Markdown.Link("GitHub page", item.HtmlUrl)})"));
                     }
 
                     var config =
@@ -106,7 +105,7 @@ namespace Alexandra.Commands.Modules
         [Description("Search for a particular shade of your choosing\nUses The Color API")]
         public async Task SearchColorAsync(Color color)
         {
-            var result = await _colorService.GetColorInfo("hex", color.ToString().Substring(1));
+            var result = await _colorService.GetColorInfo(color.ToString().Substring(1));
             var colorImagePath = _colorService.GetColorImage(color.ToString());
             using (var colorImage = LocalAttachment.File(colorImagePath, "colorImage.png"))
             {
@@ -143,7 +142,7 @@ namespace Alexandra.Commands.Modules
             [Description("The B component"), Range(0, 256)] int b)
         {
             var color = new Color(Convert.ToByte(r), Convert.ToByte(g), Convert.ToByte(b));
-            var result = await _colorService.GetColorInfo("hex", color.ToString().Substring(1));
+            var result = await _colorService.GetColorInfo(color.ToString().Substring(1));
             var colorImagePath = _colorService.GetColorImage(color.ToString());
 
             using (var colorImage = LocalAttachment.File(colorImagePath, "colorImage.png"))
