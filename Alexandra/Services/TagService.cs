@@ -44,7 +44,7 @@ namespace Alexandra.Services
                 .ToList();
         }
         
-        public async Task<int> GetTagRankAsync(Tag tag)
+        public async Task<int> RetrieveTagRankAsync(Tag tag)
         {
             var tags = await RetrieveTagsAsync(tag.GuildId);
             return tags.OrderByDescending(x => x.Uses).TakeWhile(x => x.Name != tag.Name).Count() + 1;

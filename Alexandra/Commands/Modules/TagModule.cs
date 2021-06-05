@@ -155,7 +155,7 @@ namespace Alexandra.Commands.Modules
                 .WithLexColor()
                 .AddField("Owner", member is null ? $"{tag.OwnerId} (not in server)" : member.Mention)
                 .AddField("Uses", tag.Uses, true)
-                .AddField("Rank", $"#{await _tagService.GetTagRankAsync(tag)}", true)
+                .AddField("Rank", $"#{await _tagService.RetrieveTagRankAsync(tag)}", true)
                 .AddField("Created At", $"{tag.CreatedAt:yyyy-MM-dd}", true);
 
             return Response(eb);
