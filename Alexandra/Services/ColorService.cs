@@ -14,7 +14,6 @@ namespace Alexandra.Services
         
         public ColorService(ILogger<ColorService> logger, HttpClient client) : base(logger)
         {
-            client.BaseAddress = new Uri("https://www.thecolorapi.com/");
             _client = client;
         }
 

@@ -58,7 +58,9 @@ namespace Alexandra
                     var connection = context.Configuration["database:connection"];
                     var mwConfig = context.Configuration.GetSection("MerriamWebster").Get<MerriamWebsterConfig>();
                     
-                    services.AddHttpClient<ColorService>();
+                    services.AddHttpClient<ColorService>(c => 
+                        c.BaseAddress = new Uri("https://www.thecolorapi.com/"));
+                    services.AddHttpClient<SearchService>();
                     
                     services.AddDbContext<LexDbContext>(x => 
                             x.UseNpgsql(connection).UseSnakeCaseNamingConvention())
