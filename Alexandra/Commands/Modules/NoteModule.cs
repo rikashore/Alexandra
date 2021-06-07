@@ -18,20 +18,13 @@ namespace Alexandra.Commands.Modules
     [Description("Take a few notes")]
     public class NoteModule : LexNoteModuleBase
     {
-        private readonly NoteService _noteService;
-
-        public NoteModule(NoteService noteService)
-        {
-            _noteService = noteService;
-        }
-
         [Command("create", "make")]
         [Description("Creates a note for you, you can retrieve it later")]
         public async Task<DiscordCommandResult> MakeNoteAsync(
             [Description("The content of your new note")]
             [Remainder] string content)
         {
-            await _noteService.CreateNoteAsync(content, Context.Author.Id, DateTime.Now);
+            await NoteService.CreateNoteAsync(content, Context.Author.Id, DateTime.Now);
             return Response("Note Created!");
         }
 
@@ -39,7 +32,7 @@ namespace Alexandra.Commands.Modules
         [Description("Retrieve all your notes")]
         public async Task<DiscordCommandResult> ListNotesAsync()
         {
-            var notes = await _noteService.RetrieveNotesAsync(Context.Author.Id);
+            var notes = await NoteService.RetrieveNotesAsync(Context.Author.Id);
 
             switch (notes.Count)
             {
@@ -72,7 +65,7 @@ namespace Alexandra.Commands.Modules
         [Description("retrieve a particular note")]
         public async Task<DiscordCommandResult> GetNoteAsync([Description("The Id of the note")] int id)
         {
-            var note = await _noteService.RetrieveNoteAsync(id);
+            var note = await NoteService.RetrieveNoteAsync(id);
 
             if (note is null)
                 return NoteNotFoundResponse();
@@ -92,14 +85,14 @@ namespace Alexandra.Commands.Modules
         [Description("Delete a particular note")]
         public async Task<DiscordCommandResult> DeleteNoteAsync([Description("The Id of the note")] int id)
         {
-            var note = await _noteService.RetrieveNoteAsync(id);
+            var note = await NoteService.RetrieveNoteAsync(id);
 
             if (note is null)
                 return NoteNotFoundResponse();
             if (note.OwnerId != Context.Author.Id)
                 return InvalidAccessResponse();
 
-            await _noteService.RemoveNoteAsync(note);
+            await NoteService.RemoveNoteAsync(note);
             return Response("I have removed that note");
         }
 
@@ -108,14 +101,14 @@ namespace Alexandra.Commands.Modules
         public async Task<DiscordCommandResult> EditNote([Description("The Id of the note")] int id,
             [Description("The new content of your note"), Remainder] string content)
         {
-            var note = await _noteService.RetrieveNoteAsync(id);
+            var note = await NoteService.RetrieveNoteAsync(id);
 
             if (note is null)
                 return NoteNotFoundResponse();
             if (note.OwnerId != Context.Author.Id)
                 return InvalidAccessResponse();
 
-            await _noteService.EditNoteAsync(note, content);
+            await NoteService.EditNoteAsync(note, content);
             return Response("The contents of that note have changed");
         }
     }
