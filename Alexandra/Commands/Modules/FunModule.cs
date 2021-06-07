@@ -12,8 +12,6 @@ using Disqord;
 using Disqord.Bot;
 using Disqord.Gateway;
 using Disqord.Rest;
-using MerriamWebster.NET;
-using MerriamWebster.NET.Parsing;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
@@ -25,14 +23,14 @@ namespace Alexandra.Commands.Modules
         private readonly ColorService _colorService;
         private readonly FigletService _figletService;
         private readonly Random _random;
-        private readonly IEntryParser _entryParser;
+        private readonly SearchService _searchService;
 
-        public FunModule(ColorService colorService, FigletService figletService, Random random, IEntryParser entryParser)
+        public FunModule(ColorService colorService, FigletService figletService, Random random, SearchService searchService)
         {
             _colorService = colorService;
             _figletService = figletService;
             _random = random;
-            _entryParser = entryParser;
+            _searchService = searchService;
         }
 
         [Command("avatar", "av")]
@@ -40,11 +38,13 @@ namespace Alexandra.Commands.Modules
         public DiscordCommandResult AvatarAsync([Description("The member for whom you wish to receive a portrait")] IMember member = null)
         {
             member ??= Context.Author;
+            var avatarUrl = member.GetAvatarUrl();
 
             var eb = new LocalEmbed()
                 .WithTitle($"A portrait of {member.Name}#{member.Discriminator}")
+                .WithUrl(avatarUrl)
                 .WithLexColor()
-                .WithImageUrl(member.GetAvatarUrl());
+                .WithImageUrl(avatarUrl);
 
             return Response(eb);
         }
@@ -57,13 +57,13 @@ namespace Alexandra.Commands.Modules
             
             var roles = member.GetRoles();
             var topRole = roles.Values.OrderByDescending(x => x.Position).First();
-            
+
             var eb = new LocalEmbed()
                 .WithTitle(member.Tag)
                 .WithThumbnailUrl(member.GetAvatarUrl())
                 .WithColor(topRole.Color ?? LexGlobals.LexColor)
                 .AddField("Id", member.Id, true)
-                .AddField("Nickname", member.Nick ?? "No nickname in this server", true)
+                .AddField("Nickname", member.Nick ?? "No nickname in this guild", true)
                 .AddField("Is Bot", member.IsBot ? "Yes" : "No", true)
                 .AddField("Joined At", member.JoinedAt.Value.ToString("f"), true)
                 .AddField("Created At", member.CreatedAt().ToString("f"));
@@ -116,7 +116,7 @@ namespace Alexandra.Commands.Modules
         }
         
         [Command("color"), RunMode(RunMode.Parallel)]
-        [Description("Brews random colors")]
+        [Description("Create an image for a particular color")]
         public async Task RandomColorAsync(Color color)
         {
             var colorImagePath = _colorService.GetColorImage(color.ToString());
@@ -141,8 +141,8 @@ namespace Alexandra.Commands.Modules
         [Description("Grab the definition of the word from Merriam Webster")]
         public async Task<DiscordCommandResult> SearchWordDefinitionAsync([Remainder] string word)
         {
-            var result = await _entryParser.GetAndParseAsync(Configuration.CollegiateDictionary, word);
-
+            var result = await _searchService.GetDefinitionAsync(word);
+            
             switch (result.Entries.Count)
             {
                 case 0:
@@ -181,6 +181,20 @@ namespace Alexandra.Commands.Modules
             }
         }
 
+        [Command("rw", "word")]
+        public async Task<DiscordCommandResult> GetRandomWordAsync()
+        {
+            var result = await _searchService.GetRandomWordResponseAsync();
+            
+            var le = new LocalEmbed()
+                .WithTitle(result.Word)
+                .WithDescription(result.Definition)
+                .WithLexColor()
+                .AddField("Pronunciation", result.Pronunciation);
+
+            return Response(le);
+        }
+
         [Command("choose", "choice")]
         [Description("Receive a choice")]
         public DiscordCommandResult ChoiceAsync([Description("The string of choices"), Remainder] string choice)
@@ -195,29 +209,9 @@ namespace Alexandra.Commands.Modules
 
         [Command("fig", "figlet")]
         [Description("Create some text in a FIGLet font")]
-        public DiscordCommandResult FigletFontAsync(
-            [Name("font name"), Description("The name of the font to render text with")] string fontName, 
-            [Description("The text to render"), Remainder] string text)
-        {
-            if (text.Length >= 25)
-                return Response("Your text to render can not be longer than 2000 characters");
-            
-            _figletService.ValidateFontName(fontName, out var font);
-            
-            if (font is null)
-                return Response("It seems you haven't provided me a valid font name to use.");
-
-            return Response(_figletService.GetRenderedText(text, font));
-        }
-
-        [Command("fig", "figlet"), Priority(0)]
-        [Description("Create some text in a FIGLet font")]
         public DiscordCommandResult FigletFontAsync([Description("The text to render"), Remainder] string text)
         {
-            if (text.Length >= 25)
-                return Response("Your text to render can not be longer than 2000 characters");
-            
-            return Response(_figletService.GetStandardRenderedText(text));
+            return Response(text.Length >= 25 ? "Your text to render can not be longer than 2000 characters" : _figletService.GetRenderedText(text));
         }
     }
 }
