@@ -103,7 +103,7 @@ namespace Alexandra.Commands.Modules
 
         [Command("color"), RunMode(RunMode.Parallel)]
         [Description("Search for a particular shade of your choosing\nUses The Color API")]
-        public async Task SearchColorAsync(Color color)
+        public async Task SearchColorAsync([Description("The hex color to retrieve info about")] Color color)
         {
             var result = await _colorService.GetColorInfo(color.ToString().Substring(1));
             var colorImagePath = _colorService.GetColorImage(color.ToString());

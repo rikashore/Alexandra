@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,14 +21,12 @@ namespace Alexandra.Commands.Modules
     {
         private readonly ColorService _colorService;
         private readonly FigletService _figletService;
-        private readonly Random _random;
         private readonly SearchService _searchService;
 
-        public FunModule(ColorService colorService, FigletService figletService, Random random, SearchService searchService)
+        public FunModule(ColorService colorService, FigletService figletService, SearchService searchService)
         {
             _colorService = colorService;
             _figletService = figletService;
-            _random = random;
             _searchService = searchService;
         }
 
@@ -149,7 +146,7 @@ namespace Alexandra.Commands.Modules
                     return NoResultsFoundResponse();
                 case <= 5:
                 {
-                    var j = 0;
+                    var i = 0;
                     var le = new LocalEmbed()
                         .WithTitle(result.SearchText)
                         .WithLexColor();
@@ -157,7 +154,7 @@ namespace Alexandra.Commands.Modules
                     foreach (var entry in result.Entries)
                     {
                         foreach (var def in entry.ShortDefs)
-                            le.AddField($"{++j}", def);
+                            le.AddField($"{++i}", def);
                     }
 
                     return Response(le);
@@ -201,10 +198,7 @@ namespace Alexandra.Commands.Modules
         {
             var choices = choice.Split("|");
 
-            if (choices.Length < 2)
-                return Response("I require more options.");
-
-            return Response($"I choose {choices.Random(_random)}");
+            return Response(choices.Length < 2 ? "I require more options." : $"I choose {choices.Random()}");
         }
 
         [Command("fig", "figlet")]

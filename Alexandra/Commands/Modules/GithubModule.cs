@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
-using Alexandra.Common.Utilities;
 using Disqord;
 using Disqord.Bot;
 using Octokit;

@@ -35,7 +35,7 @@ namespace Alexandra.Commands.Modules
 
         [Command, RunMode(RunMode.Parallel)]
         [Description("Eval some C#")]
-        public async Task<DiscordCommandResult> EvalCSharpAsync([Remainder] string code)
+        public async Task<DiscordCommandResult> EvalCSharpAsync([Description("The code to execute"), Remainder] string code)
         {
             if (code == null)
             {
@@ -43,7 +43,7 @@ namespace Alexandra.Commands.Modules
                 if (messageRef is not null)
                     code = messageRef.Content;
                 else
-                    return Response("More code needed, sir.");
+                    return InvalidCodeResponse();
             }
             code = EvalUtils.ValidateCode(code);
             var scriptOptions = ScriptOptions.Default

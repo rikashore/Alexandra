@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alexandra.Commands.Bases;
 using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
-using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Rest;
@@ -20,9 +18,7 @@ namespace Alexandra.Commands.Modules
     {
         [Command("create", "make")]
         [Description("Creates a note for you, you can retrieve it later")]
-        public async Task<DiscordCommandResult> MakeNoteAsync(
-            [Description("The content of your new note")]
-            [Remainder] string content)
+        public async Task<DiscordCommandResult> MakeNoteAsync([Description("The content of your new note"), Remainder] string content)
         {
             await NoteService.CreateNoteAsync(content, Context.Author.Id, DateTime.Now);
             return Response("Note Created!");
