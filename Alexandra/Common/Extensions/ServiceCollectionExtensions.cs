@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Alexandra.Common.Extensions
 {
-    public static class ServiceProviderExtensions
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddLexServices(this IServiceCollection services)
         {
