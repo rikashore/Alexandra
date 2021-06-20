@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Linq;      
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
 using Alexandra.Database;
@@ -48,7 +48,7 @@ namespace Alexandra
                     bot.Token = context.Configuration["discord:token"];
                     bot.Intents = GatewayIntents.All;
                     bot.OwnerIds = new[] {new Snowflake(LexGlobals.AuthorId)};
-                    bot.Activities = new[] {new LocalActivity("lexhelp", ActivityType.Playing)};
+                    bot.Activities = new[] { new LocalActivity("lexhelp", ActivityType.Playing) };
                     bot.UseMentionPrefix = true;
                     bot.Prefixes = context.Configuration.GetSection("discord:prefixes").Get<string[]>();
                 })
@@ -56,8 +56,8 @@ namespace Alexandra
                 {
                     var connection = context.Configuration["database:connection"];
                     var mwConfig = context.Configuration.GetSection("MerriamWebster").Get<MerriamWebsterConfig>();
-                    
-                    services.AddHttpClient<ColorService>(c => c.BaseAddress = new Uri("https://www.thecolorapi.com/"));
+
+                    services.AddHttpClient<ColorService>();
                     services.AddHttpClient<SearchService>();
                     
                     services.AddDbContext<LexDbContext>(x => 

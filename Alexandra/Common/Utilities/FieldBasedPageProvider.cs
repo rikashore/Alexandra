@@ -45,11 +45,11 @@ namespace Alexandra.Common.Utilities
                 if (_configuration.AutoGeneratePageTitles)
                     embedBuilder.WithTitle($"Page {_pages.Count + 1}/{PageCount}");
 
-                _pages.Add(new Page(_configuration.Content, embedBuilder));
+                _pages.Add(new Page().WithContent(_configuration.Content).AddEmbed(embedBuilder));
             }
         }
 
-        public ValueTask<Page> GetPageAsync(PagedMenu menu)
+        public ValueTask<Page> GetPageAsync(PagedViewBase menu)
             => new(_pages[menu.CurrentPageIndex]);
         
     }

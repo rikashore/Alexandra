@@ -20,7 +20,7 @@ namespace Alexandra.Common.Globals
         public DiscordResponseCommandResult Response(string content, LocalEmbed embed, LocalAllowedMentions mentions = null)
             => Response(new LocalMessage()
                 .WithContent(content)
-                .WithEmbed(embed)
+                .WithEmbeds(embed)
                 .WithAllowedMentions(mentions ?? LocalAllowedMentions.None));
 
         public DiscordResponseCommandResult Response(LocalMessage message)

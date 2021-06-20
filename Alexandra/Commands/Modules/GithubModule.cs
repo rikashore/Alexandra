@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
+using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
 using Disqord;
 using Disqord.Bot;

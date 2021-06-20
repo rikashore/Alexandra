@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
+using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
 using Alexandra.Common.Utilities;
@@ -38,12 +39,18 @@ namespace Alexandra.Commands.Modules
             var avatarUrl = member.GetAvatarUrl();
 
             var eb = new LocalEmbed()
-                .WithTitle($"A portrait of {member.Name}#{member.Discriminator}")
+                .WithTitle($"A portrait of {member}")
                 .WithUrl(avatarUrl)
                 .WithLexColor()
                 .WithImageUrl(avatarUrl);
 
             return Response(eb);
+        }
+
+        [Command("echo")]
+        public DiscordCommandResult Echo([Remainder] string echoText)
+        {
+            return Response(new LocalMessage().WithAllowedMentions(LocalAllowedMentions.None).WithContent(echoText));
         }
 
         [Command("userinfo", "whois")]
@@ -104,7 +111,7 @@ namespace Alexandra.Commands.Modules
 
                 var mb = new LocalMessage()
                     .WithAttachments(colorImage)
-                    .WithEmbed(eb);
+                    .WithEmbeds(eb);
 
                 await Response(mb);
             }
@@ -126,7 +133,7 @@ namespace Alexandra.Commands.Modules
 
                 var mb = new LocalMessage()
                     .WithAttachments(colorImage)
-                    .WithEmbed(eb);
+                    .WithEmbeds(eb);
 
                 await Response(mb);
             }
@@ -204,8 +211,7 @@ namespace Alexandra.Commands.Modules
         [Command("fig", "figlet")]
         [Description("Create some text in a FIGLet font")]
         public DiscordCommandResult FigletFontAsync([Description("The text to render"), Remainder] string text)
-        {
-            return Response(text.Length >= 25 ? "Your text to render can not be longer than 2000 characters" : _figletService.GetRenderedText(text));
-        }
+            => Response(text.Length >= 25 ? "Your text to render can not be longer than 2000 characters" : _figletService.GetRenderedText(text));
+        
     }
 }

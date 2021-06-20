@@ -1,6 +1,6 @@
 ﻿using Disqord.Bot;
 
-namespace Alexandra.Commands.Bases
+namespace Alexandra.Commands.Bases.ModuleBases
 {
     public class LexGuildModuleBase : DiscordGuildModuleBase
     {

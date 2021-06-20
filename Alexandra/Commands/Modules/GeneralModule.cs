@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
+using Alexandra.Commands.Bases.ModuleBases;
+using Alexandra.Commands.Bases.ViewBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
 using Disqord;
@@ -33,17 +35,7 @@ namespace Alexandra.Commands.Modules
         [Description("Receive information about Alexandra")]
         public DiscordCommandResult InfoAsync()
         {
-            var authorString = Context.Bot.GetUser(LexGlobals.AuthorId).ToString();
-
-            var embedBuilder = new LocalEmbed()
-                .WithLexColor()
-                .WithTitle(Context.Bot.CurrentUser.Name)
-                .AddField("Author", authorString)
-                .AddField("Source Code", Markdown.Link("GitHub", LexGlobals.LexRepo), true)
-                .AddField("Octokit.net", Markdown.Link("GitHub", LexGlobals.OctokitRepo), true)
-                .AddField("Library", Markdown.Link("Disqord " + Library.Version, Library.RepositoryUrl), true);
-
-            return Response(embedBuilder);
+            return View(new InfoViewBase());
         }
 
         [Command("quote")]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
+using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Database.Entities;
 using Alexandra.Services;
@@ -125,18 +126,17 @@ namespace Alexandra.Commands.Modules
             if (!string.IsNullOrWhiteSpace(current))
                 stringPages.Add(current);
 
-            var pages = stringPages.Select(x => new Page(
-                    new LocalEmbed()
-                        .WithLexColor()
-                        .WithTitle("Tags")
-                        .WithDescription(x)
-                        .WithFooter($"Page {stringPages.IndexOf(x) + 1} of {stringPages.Count}")))
+            var pages = stringPages.Select(x => new Page().AddEmbed(new LocalEmbed()
+                    .WithLexColor()
+                    .WithTitle("Tags")
+                    .WithDescription(x)
+                    .WithFooter($"Page {stringPages.IndexOf(x) + 1} of {stringPages.Count}")))
                 .ToList();
 
             return pages.Count switch
             {
                 0 => Response("There are no tags for this server."),
-                1 => Response(pages[0].Embed),
+                1 => Response(pages[0].Embeds[0]),
                 _ => Pages(pages)
             };
         }

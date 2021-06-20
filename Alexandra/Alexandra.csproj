@@ -6,8 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Disqord" Version="1.0.0-06012021-32" />
-      <PackageReference Include="Disqord.Bot" Version="1.0.0-06012021-32" />
+      <PackageReference Include="Disqord" Version="1.0.0-06202021-38" />
+      <PackageReference Include="Disqord.Bot" Version="1.0.0-06202021-38" />
       <PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
       <PackageReference Include="Figgle" Version="0.4.0" />
       <PackageReference Include="LevenshteinMinimumEditDistance" Version="1.2.0" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
+using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Utilities;
 using Alexandra.Services;
@@ -126,7 +127,7 @@ namespace Alexandra.Commands.Modules
 
                 var mb = new LocalMessage()
                     .WithAttachments(colorImage)
-                    .WithEmbed(eb);
+                    .WithEmbeds(eb);
 
                 await Response(mb);
             }
@@ -164,7 +165,7 @@ namespace Alexandra.Commands.Modules
 
                 var mb = new LocalMessage()
                     .WithAttachments(colorImage)
-                    .WithEmbed(eb);
+                    .WithEmbeds(eb);
                 
                 await Response(mb);
             }
