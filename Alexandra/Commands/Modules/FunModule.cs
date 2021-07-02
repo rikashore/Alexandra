@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Alexandra.Commands.Bases;
 using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
@@ -36,7 +35,7 @@ namespace Alexandra.Commands.Modules
         public DiscordCommandResult AvatarAsync([Description("The member for whom you wish to receive a portrait")] IMember member = null)
         {
             member ??= Context.Author;
-            var avatarUrl = member.GetAvatarUrl();
+            var avatarUrl = member.GetAvatarUrl(CdnAssetFormat.Automatic, 2048);
 
             var eb = new LocalEmbed()
                 .WithTitle($"A portrait of {member}")
@@ -58,7 +57,7 @@ namespace Alexandra.Commands.Modules
         public DiscordCommandResult UserInfo([Description("The user for whom you wish to receive information")] IMember member = null)
         {
             member ??= Context.Author;
-            
+
             var roles = member.GetRoles();
             var topRole = roles.Values.OrderByDescending(x => x.Position).First();
 
@@ -82,13 +81,14 @@ namespace Alexandra.Commands.Modules
             var owner = await Context.Guild.FetchMemberAsync(Context.Guild.OwnerId);
             var botMemberCount = Context.Guild.Members.Values.Count(x => x.IsBot);
 
-            var eb = new LocalEmbed()
+            var features = Context.Guild.Features;
+
+            var eb = new LexEmbed()
                 .WithTitle(Context.Guild.Name)
                 .WithDescription($"**ID:** {Context.Guild.Id}\n**Owner:** {owner}")
                 .WithThumbnailUrl(Context.Guild.GetIconUrl())
                 .WithFooter("Created")
                 .WithTimestamp(Context.Guild.CreatedAt())
-                .WithLexColor()
                 .AddField("Member count", $"{Context.Guild.MemberCount} ({botMemberCount} bots)")
                 .AddField("Channels", Context.Guild.GetChannels().Count)
                 .AddField("Roles", Context.Guild.Roles.Count);
@@ -190,10 +190,9 @@ namespace Alexandra.Commands.Modules
         {
             var result = await _searchService.GetRandomWordResponseAsync();
             
-            var le = new LocalEmbed()
+            var le = new LexEmbed()
                 .WithTitle(result.Word)
                 .WithDescription(result.Definition)
-                .WithLexColor()
                 .AddField("Pronunciation", result.Pronunciation);
 
             return Response(le);

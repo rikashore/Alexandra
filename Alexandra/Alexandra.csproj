@@ -6,13 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Disqord" Version="1.0.0-06202021-38" />
-      <PackageReference Include="Disqord.Bot" Version="1.0.0-06202021-38" />
+      <PackageReference Include="Disqord.Bot" Version="1.0.0-07022021-42" />
       <PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
       <PackageReference Include="Figgle" Version="0.4.0" />
       <PackageReference Include="LevenshteinMinimumEditDistance" Version="1.2.0" />
       <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
-      <PackageReference Include="MerriamWebster.NET" Version="1.7.0" />
+      <PackageReference Include="MerriamWebster.NET" Version="1.7.1" />
       <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="3.10.0-3.final" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0-preview.4.21253.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0-preview.4.21253.1">

@@ -84,7 +84,7 @@ namespace Alexandra.Commands.Modules
                     {
                         var eb = new LocalEmbed()
                             .WithTitle("Execution Failure")
-                            .WithDescription(state.Exception.ToString().SplitInParts(LocalEmbed.MAX_DESCRIPTION_LENGTH).First())
+                            .WithDescription(state.Exception.ToString().SplitInParts(LocalEmbed.MaxDescriptionLength).First())
                             .WithColor(Color.Red)
                             .WithFooter($"{stopwatch.Elapsed.TotalMilliseconds}ms");
                         return Response(eb);

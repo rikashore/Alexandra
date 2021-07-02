@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Alexandra.Common.Extensions;
 using Alexandra.Common.Types;
 using MerriamWebster.NET;
 using MerriamWebster.NET.Dto;
 using MerriamWebster.NET.Parsing;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Alexandra.Services
 {
@@ -23,8 +23,9 @@ namespace Alexandra.Services
 
         public async Task<RandomWordData> GetRandomWordResponseAsync()
         {
-            var response = await _httpClient.GetStringAsync("https://random-words-api.vercel.app/word");
-            var result = JsonConvert.DeserializeObject<List<RandomWordData>>(response);
+            var response = await _httpClient.GetAsync("https://random-words-api.vercel.app/word");
+            var res = await response.Content.ReadAsStreamAsync();
+            var result = res.DeserializeTo<List<RandomWordData>>();
             return result?[0];
         }
 

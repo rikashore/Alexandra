@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
+using Alexandra.Common.Utilities;
 using Alexandra.Database.Entities;
 using Alexandra.Services;
 using Disqord;
@@ -126,8 +127,7 @@ namespace Alexandra.Commands.Modules
             if (!string.IsNullOrWhiteSpace(current))
                 stringPages.Add(current);
 
-            var pages = stringPages.Select(x => new Page().AddEmbed(new LocalEmbed()
-                    .WithLexColor()
+            var pages = stringPages.Select(x => new Page().AddEmbed(new LexEmbed()
                     .WithTitle("Tags")
                     .WithDescription(x)
                     .WithFooter($"Page {stringPages.IndexOf(x) + 1} of {stringPages.Count}")))
@@ -152,9 +152,8 @@ namespace Alexandra.Commands.Modules
             var member = Context.Guild.GetMember(tag.OwnerId) ??
                          await Context.Guild.FetchMemberAsync(tag.OwnerId);
 
-            var eb = new LocalEmbed()
+            var eb = new LexEmbed()
                 .WithTitle($"Tag: {tag.Name}")
-                .WithLexColor()
                 .AddField("Owner", member is null ? $"{tag.OwnerId} (not in server)" : member.Mention)
                 .AddField("Uses", tag.Uses, true)
                 .AddField("Rank", $"#{await _tagService.RetrieveTagRankAsync(tag)}", true)

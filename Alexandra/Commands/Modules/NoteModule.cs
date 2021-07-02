@@ -36,7 +36,7 @@ namespace Alexandra.Commands.Modules
                     return Response("It seems you do not have any notes");
                 case <= 5:
                 {
-                    var eb = new LocalEmbed().WithLexColor();
+                    var eb = new LexEmbed();
 
                     foreach (var note in notes)
                         eb.AddField($"Note {note.Id}", note.ToString());
@@ -67,12 +67,11 @@ namespace Alexandra.Commands.Modules
                 return NoteNotFoundResponse();
 
             var owner = await Context.Bot.FetchUserAsync(note.OwnerId);
-            
-            var eb = new LocalEmbed()
+
+            var eb = new LexEmbed()
                 .WithTitle($"Note {note.Id}")
                 .WithDescription(note.ToString())
-                .WithAuthor(owner)
-                .WithLexColor();
+                .WithAuthor(owner);
 
             return Response(eb);
         }

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Alexandra.Commands.Bases;
 using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Common.Extensions;
+using Alexandra.Common.Utilities;
 using Disqord;
 using Disqord.Bot;
 using Octokit;
@@ -33,10 +33,9 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.Repository.Get(details[0], details[1]);
 
-                var eb = new LocalEmbed()
+                var eb = new LexEmbed()
                     .WithTitle(result.Name)
                     .WithDescription(result.Description)
-                    .WithLexColor()
                     .AddField("Language", result.Language)
                     .AddField("Source", Markdown.Link("Github", result.HtmlUrl));
 
@@ -59,10 +58,9 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.Repository.Get(username, repoName);
 
-                var eb = new LocalEmbed()
+                var eb = new LexEmbed()
                     .WithTitle(result.Name)
                     .WithDescription(result.Description)
-                    .WithLexColor()
                     .AddField("Language", result.Language)
                     .AddField("Source", Markdown.Link("Github", result.HtmlUrl));
 
@@ -82,12 +80,11 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.User.Get(username);
 
-                var eb = new LocalEmbed()
+                var eb = new LexEmbed()
                     .WithTitle(result.Name ?? result.Login)
                     .WithUrl(result.HtmlUrl)
                     .WithThumbnailUrl(result.AvatarUrl)
                     .WithDescription(result.Bio ?? "No Bio")
-                    .WithLexColor()
                     .AddField("Followers", result.Followers, true)
                     .AddField("Following", result.Following, true)
                     .AddField("Repositories", result.PublicRepos, true)
@@ -116,11 +113,10 @@ namespace Alexandra.Commands.Modules
                 var resultText = result.Body.Length > 1024 ? result.Body[..1000] + "..." : result.Body;
                 var userText = result.User.Name ?? result.User.Login;
 
-                var eb = new LocalEmbed()
+                var eb = new LexEmbed()
                     .WithTitle(result.Title)
                     .WithUrl(result.HtmlUrl)
                     .WithDescription(resultText)
-                    .WithLexColor()
                     .AddField("Created By", userText);
 
                 return Response(eb);
@@ -144,11 +140,10 @@ namespace Alexandra.Commands.Modules
                 var resultText = result.Body.Length > 1024 ? result.Body[..1000] + "..." : result.Body;
                 var userText = result.User.Name ?? result.User.Login;
 
-                var eb = new LocalEmbed()
+                var eb = new LexEmbed()
                     .WithTitle(result.Title)
                     .WithUrl(result.HtmlUrl)
                     .WithDescription(resultText)
-                    .WithLexColor()
                     .AddField("Created By", userText)
                     .AddField(result.Repository.Name, Markdown.Link("GitHub", result.Repository.HtmlUrl));
 

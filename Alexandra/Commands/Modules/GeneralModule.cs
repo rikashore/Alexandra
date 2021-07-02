@@ -8,6 +8,7 @@ using Alexandra.Commands.Bases.ModuleBases;
 using Alexandra.Commands.Bases.ViewBases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
+using Alexandra.Common.Utilities;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Gateway;
@@ -74,10 +75,9 @@ namespace Alexandra.Commands.Modules
 
             var message = await Context.Bot.FetchMessageAsync(channelId, messageId);
             
-            var eb = new LocalEmbed()
+            var eb = new LexEmbed()
                 .WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl())
                 .WithDescription(message.Content)
-                .WithLexColor()
                 .WithFooter($"Id: {messageId}")
                 .WithTimestamp(message.CreatedAt());
 
@@ -92,10 +92,9 @@ namespace Alexandra.Commands.Modules
             if (messageRef is null)
                 return Response("I require a Jump URL or a reference to a message to quote");
             
-            var eb = new LocalEmbed()
+            var eb = new LexEmbed()
                 .WithAuthor(messageRef.Author.ToString(), messageRef.Author.GetAvatarUrl())
                 .WithDescription(messageRef.Content)
-                .WithLexColor()
                 .WithFooter($"Id: {messageRef.Id}")
                 .WithTimestamp(messageRef.CreatedAt());
 
@@ -177,10 +176,9 @@ namespace Alexandra.Commands.Modules
                 return Reply("No module or command found matching the input.");
             if (foundCommand != null)
             {
-                var eb = new LocalEmbed()
+                var eb = new LexEmbed()
                     .WithTitle(foundCommand.Name)
                     .WithDescription(foundCommand.Description ?? "No Description")
-                    .WithLexColor()
                     .AddField("Module", foundCommand.Module is null ? "Top level command" : foundCommand.Module.Name)
                     .AddField("Aliases", foundCommand.Aliases is null
                         ? "No aliases"
@@ -197,10 +195,9 @@ namespace Alexandra.Commands.Modules
             }
             else
             {
-                var eb = new LocalEmbed()
+                var eb = new LexEmbed()
                     .WithTitle(foundModule.Name)
                     .WithDescription(foundModule.Description ?? "No Description")
-                    .WithLexColor()
                     .AddField("Submodules",
                         foundModule.Submodules.Count == 0
                             ? "No submodules"

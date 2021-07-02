@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Alexandra.Common.Extensions;
 using Alexandra.Common.Types;
 using ImageMagick;
 using Microsoft.Extensions.Logging;
@@ -27,10 +28,9 @@ namespace Alexandra.Services
 
         public async Task<ColorInfoData> GetColorInfo(string colorString)
         {
-            var response = await _client.GetStringAsync($"https://www.thecolorapi.com/id?hex={colorString}");
-            var result = JsonConvert.DeserializeObject<ColorInfoData>(response);
-
-            return result;
+            var response = await _client.GetAsync($"https://www.thecolorapi.com/id?hex={colorString}");
+            var result = await response.Content.ReadAsStreamAsync();
+            return result.DeserializeTo<ColorInfoData>();
         }
     }
 }
