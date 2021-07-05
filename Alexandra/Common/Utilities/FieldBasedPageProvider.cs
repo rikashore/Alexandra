@@ -10,13 +10,13 @@ namespace Alexandra.Common.Utilities
 {
     // Thanks Zack for inspiring me
     // https://github.com/Zackattak01/CheeseBot/blob/main/CheeseBot/Disqord/FieldBasedPageProvider.cs
-    public class FieldBasedPageProvider : IPageProvider
+    public class FieldBasedPageProvider : PageProvider
     {
         private readonly List<Page> _pages;
 
         private readonly FieldBasedPageProviderConfiguration _configuration;
 
-        public int PageCount { get; }
+        public override int PageCount { get; }
 
         public FieldBasedPageProvider(IEnumerable<LocalEmbedField> fields, FieldBasedPageProviderConfiguration configuration = null)
         {
@@ -42,15 +42,12 @@ namespace Alexandra.Common.Utilities
                     Color = LexGlobals.LexColor
                 };
 
-                if (_configuration.AutoGeneratePageTitles)
-                    embedBuilder.WithTitle($"Page {_pages.Count + 1}/{PageCount}");
-
                 _pages.Add(new Page().WithContent(_configuration.Content).AddEmbed(embedBuilder));
             }
         }
 
-        public ValueTask<Page> GetPageAsync(PagedViewBase menu)
-            => new(_pages[menu.CurrentPageIndex]);
+        public override ValueTask<Page> GetPageAsync(PagedViewBase menu)
+            => new ValueTask<Page>(_pages[menu.CurrentPageIndex]);
         
     }
 }
