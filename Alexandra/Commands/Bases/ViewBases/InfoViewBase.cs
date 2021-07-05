@@ -31,7 +31,7 @@ namespace Alexandra.Commands.Bases.ViewBases
             });
         }
 
-        [Button(Label = "Main info", Style = ButtonComponentStyle.Secondary)]
+        [Button(Label = "Main info", Style = LocalButtonComponentStyle.Secondary)]
         public ValueTask MainInfo(ButtonEventArgs e)
         {
             if (TemplateMessage.Embeds[0].Title == "Alexandra")
@@ -42,7 +42,7 @@ namespace Alexandra.Commands.Bases.ViewBases
             return default;
         }
 
-        [Button(Label = "Some more info", Style = ButtonComponentStyle.Secondary)]
+        [Button(Label = "Some more info", Style = LocalButtonComponentStyle.Secondary)]
         public ValueTask SecondaryInfo(ButtonEventArgs e)
         {
             if (TemplateMessage.Embeds[0].Title == "Some more info")
