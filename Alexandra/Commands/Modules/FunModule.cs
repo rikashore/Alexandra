@@ -211,6 +211,5 @@ namespace Alexandra.Commands.Modules
         [Description("Create some text in a FIGLet font")]
         public DiscordCommandResult FigletFontAsync([Description("The text to render"), Remainder] string text)
             => Response(text.Length >= 25 ? "Your text to render can not be longer than 2000 characters" : _figletService.GetRenderedText(text));
-        
     }
 }
