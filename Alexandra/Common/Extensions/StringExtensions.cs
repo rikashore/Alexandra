@@ -15,5 +15,8 @@ namespace Alexandra.Common.Extensions
             for (var i = 0; i < s.Length; i += partLength)
                 yield return s.Substring(i, Math.Min(partLength, s.Length - i));
         }
+
+        public static string CutIfLong(this string s)
+            => s.Length > 1024 ? s[..1000] : s;
     }
 }

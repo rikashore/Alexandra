@@ -110,7 +110,7 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.Issue.Get(ownerName, name, issueNumber);
 
-                var resultText = result.Body.Length > 1024 ? result.Body[..1000] + "..." : result.Body;
+                var resultText = result.Body.CutIfLong();
                 var userText = result.User.Name ?? result.User.Login;
 
                 var eb = new LexEmbed()
@@ -137,7 +137,7 @@ namespace Alexandra.Commands.Modules
             {
                 var result = await _lexGithubClient.Issue.Get(repoId, issueNumber);
 
-                var resultText = result.Body.Length > 1024 ? result.Body[..1000] + "..." : result.Body;
+                var resultText = result.Body.CutIfLong();
                 var userText = result.User.Name ?? result.User.Login;
 
                 var eb = new LexEmbed()

@@ -174,18 +174,12 @@ namespace Alexandra.Commands.Modules
 
         private string GetRepoSearchResultDescription(Repository repository)
         {
-            if (repository.Description is null)
-                return "";
-            
-            return repository.Description.Length < 1000 ? repository.Description : "Description too long";
+            return repository.Description is null ? "" : repository.Description.CutIfLong();
         }
 
         private string GetUserSearchResultBio(User user)
         {
-            if (user.Bio is null)
-                return "";
-            
-            return user.Bio.Length < 1000 ? user.Bio : "Description too long";
+            return user.Bio is null ? "" : user.Bio.CutIfLong();
         }
     }
 }
