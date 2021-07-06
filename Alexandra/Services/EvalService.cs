@@ -1,4 +1,5 @@
 ﻿using Alexandra.Common.Extensions;
+using Alexandra.Common.Utilities;
 using Disqord;
 using Microsoft.Extensions.Logging;
 using MoonSharp.Interpreter;
@@ -37,10 +38,10 @@ namespace Alexandra.Services
 
                 var codeReturn = Markdown.CodeBlock("lua", resString.ToString());
 
-                var resEmbed = new LocalEmbed()
+                var resEmbed = new LexEmbed()
                     .WithTitle("Evaluation Success")
                     .WithDescription(codeReturn)
-                    .WithLexColor();
+                    .OverrideColor(new Color(161, 11, 11));
 
                 return resEmbed;
             }
@@ -48,10 +49,10 @@ namespace Alexandra.Services
             {
                 var errCodeBlock = Markdown.CodeBlock("lua", scriptRuntimeException.DecoratedMessage);
 
-                var errEmbed = new LocalEmbed()
+                var errEmbed = new LexEmbed()
                     .WithTitle("An error occured, Runtime Exception")
                     .WithDescription(errCodeBlock)
-                    .WithErrorColor();
+                    .OverrideColor(new Color(161, 11, 11));
                 
                 Logger.LogError("Unsuccessfully evaluated Lua code, Runtime Exception");
                 
@@ -61,10 +62,10 @@ namespace Alexandra.Services
             {
                 var errCodeBlock =  Markdown.CodeBlock("lua", syntaxErrorException.DecoratedMessage);
 
-                var errEmbed = new LocalEmbed()
+                var errEmbed = new LexEmbed()
                     .WithTitle("An error occured, Syntax Exception")
                     .WithDescription(errCodeBlock)
-                    .WithErrorColor();
+                    .OverrideColor(new Color(161, 11, 11));
                 
                 Logger.LogError("Unsuccessfully evaluated Lua code, Syntax exception");
 

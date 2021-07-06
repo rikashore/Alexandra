@@ -72,9 +72,8 @@ namespace Alexandra.Commands.Modules
                     return NoResultsFoundResponse();
                 case <= 5:
                 {
-                    var eb = new LocalEmbed()
-                        .WithTitle("Search Results")
-                        .WithLexColor();
+                    var eb = new LexEmbed()
+                        .WithTitle("Search Results");
                     
                     foreach (var item in result.Items)
                         eb.AddField(item.Name ?? item.Login, $"{GetUserSearchResultBio(item)} ({Markdown.Link("GitHub page", item.HtmlUrl)})");
