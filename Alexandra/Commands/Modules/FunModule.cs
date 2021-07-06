@@ -37,10 +37,9 @@ namespace Alexandra.Commands.Modules
             member ??= Context.Author;
             var avatarUrl = member.GetAvatarUrl(CdnAssetFormat.Automatic, 2048);
 
-            var eb = new LocalEmbed()
+            var eb = new LexEmbed()
                 .WithTitle($"A portrait of {member}")
                 .WithUrl(avatarUrl)
-                .WithLexColor()
                 .WithImageUrl(avatarUrl);
 
             return Response(eb);
@@ -68,8 +67,8 @@ namespace Alexandra.Commands.Modules
                 .AddField("Id", member.Id, true)
                 .AddField("Nickname", member.Nick ?? "No nickname in this guild", true)
                 .AddField("Is Bot", member.IsBot ? "Yes" : "No", true)
-                .AddField("Joined At", member.JoinedAt.Value.ToString("f"), true)
-                .AddField("Created At", member.CreatedAt().ToString("f"));
+                .AddField("Joined At", Markdown.Timestamp(member.JoinedAt.Value, Markdown.TimestampFormat.LongDateTime), true)
+                .AddField("Created At", Markdown.Timestamp(member.CreatedAt(), Markdown.TimestampFormat.LongDateTime));
 
             return Response(eb);
         }
@@ -80,8 +79,8 @@ namespace Alexandra.Commands.Modules
         {
             var owner = await Context.Guild.FetchMemberAsync(Context.Guild.OwnerId);
             var botMemberCount = Context.Guild.Members.Values.Count(x => x.IsBot);
-
-            var features = Context.Guild.Features;
+            
+            var features = Context.Guild.GetGuildFeatures();
 
             var eb = new LexEmbed()
                 .WithTitle(Context.Guild.Name)
@@ -91,7 +90,8 @@ namespace Alexandra.Commands.Modules
                 .WithTimestamp(Context.Guild.CreatedAt())
                 .AddField("Member count", $"{Context.Guild.MemberCount} ({botMemberCount} bots)")
                 .AddField("Channels", Context.Guild.GetChannels().Count)
-                .AddField("Roles", Context.Guild.Roles.Count);
+                .AddField("Roles", Context.Guild.Roles.Count)
+                .AddField("Features", features);
 
             return Response(eb);
         }
@@ -154,9 +154,8 @@ namespace Alexandra.Commands.Modules
                 case <= 5:
                 {
                     var i = 0;
-                    var le = new LocalEmbed()
-                        .WithTitle(result.SearchText)
-                        .WithLexColor();
+                    var le = new LexEmbed()
+                        .WithTitle(result.SearchText);
 
                     foreach (var entry in result.Entries)
                     {

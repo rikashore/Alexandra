@@ -14,10 +14,9 @@ namespace Alexandra.Services
             _mystPasteClient = new MystPasteClient();
         }
 
-        public async Task<List<Pasty>> GetPasties(string id)
+        public async Task<Paste> GetPasties(string id)
         {
-            var paste = await _mystPasteClient.Paste.GetPasteAsync(id);
-            return paste.Pasties;
+            return await _mystPasteClient.Paste.GetPasteAsync(id);
         }
 
         public Task<Language> GetLanguageByNameAsync(string language)

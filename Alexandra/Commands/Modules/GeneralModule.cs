@@ -110,8 +110,8 @@ namespace Alexandra.Commands.Modules
             IReadOnlyList<Command> commands = topLevelModules.Except(modules).SelectMany(x => x.Commands).ToArray();
             if (path.Length == 0)
             {
-                var builder = new LocalEmbed()
-                    .WithLexColor();
+                var builder = new LexEmbed();
+                
                 if (modules.Count != 0)
                 {
                     var aliases = modules.Select(x => x.Aliases[0])

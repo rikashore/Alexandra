@@ -1,12 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Alexandra.Commands.Bases;
 using Alexandra.Common.Extensions;
 using Alexandra.Common.Globals;
-using Alexandra.Common.Utilities;
 using Alexandra.Services;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Extensions.Interactivity.Menus.Paged;
+using MystPaste.NET;
 using Qmmands;
 
 namespace Alexandra.Commands.Modules
@@ -27,18 +29,27 @@ namespace Alexandra.Commands.Modules
         [Description("Get a paste")]
         public async Task<DiscordCommandResult> GetPastesAsync([Description("The id of the paste to grab")] string id)
         {
-            var pasties = await _mystPasteService.GetPasties(id);
+            var paste = await _mystPasteService.GetPasties(id);
+            var link = $"<{paste.Url}>";
 
-            if (pasties.Count == 1)
-                return Response(Markdown.CodeBlock(pasties[0].Code.CutIfLong()));
+            if (paste.Pasties.Count == 1)
+                return Response($"{Markdown.CodeBlock(paste.Pasties[0].Code.CutIfLong())} {link}");
             
-            return Pages(new PastyListPageProvider(pasties.ToPastyPageList()));
+            return Pages(new ListPageProvider(paste.Pasties.ToPastyPageList(link)));
         }
 
         [Command("lang", "language")]
         public async Task<DiscordCommandResult> GetLanguageByNameInfoAsync(string language)
         {
-            var lang = await _mystPasteService.GetLanguageByNameAsync(language);
+            Language lang;
+            try
+            {
+                lang = await _mystPasteService.GetLanguageByNameAsync(language);
+            }
+            catch (Exception)
+            {
+                return Response("It seems a language with that name could not be found.");
+            }
 
             var parser = Context.Bot.Commands.GetTypeParser<Color>();
             
@@ -72,7 +83,15 @@ namespace Alexandra.Commands.Modules
         [Command("ext", "extension")]
         public async Task<DiscordCommandResult> GetLanguageByExtensionInfoAsync(string extension)
         {
-            var lang = await _mystPasteService.GetLanguageByExtensionAsync(extension);
+            Language lang;
+            try
+            {
+                lang = await _mystPasteService.GetLanguageByExtensionAsync(extension);
+            }
+            catch (Exception)
+            {
+                return Response("It seems a language with that extension could not be found.");
+            }
 
             var parser = Context.Bot.Commands.GetTypeParser<Color>();
 
