@@ -26,14 +26,14 @@ namespace Alexandra.Common.Extensions
             return source[random.Next(0, source.Count)];
         }
 
-        public static List<Page> ToPastyPageList(this IEnumerable<Pasty> source)
+        public static List<Page> ToPastyPageList(this IEnumerable<Pasty> source, string url)
         {
             var pages = new List<Page>();
 
             foreach (var pasty in source)
             {
                 var text = pasty.Code.CutIfLong();
-                pages.Add(new Page().WithContent($"{pasty.Title ?? "Untitled"}\n{Markdown.CodeBlock(text)}"));
+                pages.Add(new Page().WithContent($"{pasty.Title ?? "Untitled"}\n{Markdown.CodeBlock(text)}\n{url}"));
             }
 
             return pages;
